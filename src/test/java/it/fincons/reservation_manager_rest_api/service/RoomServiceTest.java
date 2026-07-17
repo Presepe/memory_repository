@@ -1,6 +1,7 @@
 package it.fincons.reservation_manager_rest_api.service;
 
 import it.fincons.reservation_manager_rest_api.dto.CreateRoomRequest;
+import it.fincons.reservation_manager_rest_api.dto.PatchRoomRequest;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
 import it.fincons.reservation_manager_rest_api.model.Booking;
@@ -53,12 +54,7 @@ class RoomServiceTest {
             throws ResourceNotFoundException {
 
         Room room =
-                new Room(
-                        1L,
-                        "Sala Leonardo",
-                        8,
-                        true
-                );
+                new Room(1L, "Sala Leonardo", 8, true);
 
         when(roomRepository.existsById(1L))
                 .thenReturn(true);
@@ -68,7 +64,6 @@ class RoomServiceTest {
 
         Room result = roomService.getRoomById(1L);
 
-        assertNotNull(result);
         assertEquals(1L, result.getId());
         assertEquals("Sala Leonardo", result.getName());
     }
@@ -93,7 +88,7 @@ class RoomServiceTest {
         request.setCapacity(20);
         request.setHasProjector(true);
 
-        Room room =
+        Room savedRoom =
                 new Room(
                         1L,
                         "Sala Tesla",
@@ -102,11 +97,10 @@ class RoomServiceTest {
                 );
 
         when(roomRepository.save(any(Room.class)))
-                .thenReturn(room);
+                .thenReturn(savedRoom);
 
         Room result = roomService.createRoom(request);
 
-        assertNotNull(result);
         assertEquals("Sala Tesla", result.getName());
 
         verify(roomRepository).save(any(Room.class));
@@ -116,12 +110,6 @@ class RoomServiceTest {
     void updateRoom_ShouldUpdateRoom()
             throws ResourceNotFoundException {
 
-        CreateRoomRequest request = new CreateRoomRequest();
-
-        request.setName("Sala Aggiornata");
-        request.setCapacity(20);
-        request.setHasProjector(false);
-
         Room room =
                 new Room(
                         1L,
@@ -129,6 +117,13 @@ class RoomServiceTest {
                         8,
                         true
                 );
+
+        CreateRoomRequest request =
+                new CreateRoomRequest();
+
+        request.setName("Sala Aggiornata");
+        request.setCapacity(20);
+        request.setHasProjector(false);
 
         when(roomRepository.existsById(1L))
                 .thenReturn(true);
@@ -174,10 +169,10 @@ class RoomServiceTest {
                         true
                 );
 
-        CreateRoomRequest patch =
-                new CreateRoomRequest();
+        PatchRoomRequest request =
+                new PatchRoomRequest();
 
-        patch.setName("Sala Patchata");
+        request.setName("Sala Patchata");
 
         when(roomRepository.existsById(1L))
                 .thenReturn(true);
@@ -189,7 +184,7 @@ class RoomServiceTest {
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         Room result =
-                roomService.patchRoom(1L, patch);
+                roomService.patchRoom(1L, request);
 
         assertEquals("Sala Patchata", result.getName());
         assertEquals(8, result.getCapacity());
@@ -202,18 +197,19 @@ class RoomServiceTest {
         when(roomRepository.existsById(99L))
                 .thenReturn(false);
 
-        CreateRoomRequest patch =
-                new CreateRoomRequest();
+        PatchRoomRequest request =
+                new PatchRoomRequest();
 
         assertThrows(
                 ResourceNotFoundException.class,
-                () -> roomService.patchRoom(99L, patch)
+                () -> roomService.patchRoom(99L, request)
         );
     }
 
     @Test
     void deleteRoom_ShouldDeleteRoom()
-            throws ResourceNotFoundException, ResourceInUseException {
+            throws ResourceInUseException,
+            ResourceNotFoundException {
 
         when(roomRepository.existsById(1L))
                 .thenReturn(true);
@@ -229,13 +225,23 @@ class RoomServiceTest {
     @Test
     void deleteRoom_ShouldThrowResourceInUseException() {
 
+        Booking booking =
+                new Booking(
+                        1L,
+                        1L,
+                        1L,
+                        null,
+                        null,
+                        null
+                );
+
         when(roomRepository.existsById(1L))
                 .thenReturn(true);
 
-        Booking booking = mock(Booking.class);
-
         when(bookingRepository.findByRoomId(1L))
-                .thenReturn(Collections.singletonList(booking));
+                .thenReturn(
+                        Collections.singletonList(booking)
+                );
 
         assertThrows(
                 ResourceInUseException.class,

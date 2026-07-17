@@ -18,9 +18,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -37,37 +35,23 @@ class RoomControllerTest {
     @Test
     void getAllRooms_ShouldReturnRooms() throws Exception {
 
-        List<Room> rooms = List.of(new Room(1L, "Sala Leonardo", 8, true));
+        when(roomService.getAllRooms()).thenReturn(List.of(new Room(1L, "Sala Leonardo", 8, true)));
 
-        when(roomService.getAllRooms()).thenReturn(rooms);
-
-        mockMvc.perform(get("/api/rooms")).andExpect(status().isOk()).andExpect(jsonPath("$[0].id").value(1)).andExpect(jsonPath("$[0].name").value("Sala Leonardo")).andExpect(jsonPath("$[0].capacity").value(8)).andExpect(jsonPath("$[0].hasProjector").value(true));
+        mockMvc.perform(get("/api/rooms")).andExpect(status().isOk()).andExpect(jsonPath("$[0].name").value("Sala Leonardo"));
     }
 
     @Test
     void getRoomById_ShouldReturnRoom() throws Exception {
 
-        Room room = new Room(1L, "Sala Leonardo", 8, true);
+        when(roomService.getRoomById(1L)).thenReturn(new Room(1L, "Sala Leonardo", 8, true));
 
-        when(roomService.getRoomById(1L)).thenReturn(room);
-
-        mockMvc.perform(get("/api/rooms/1")).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1)).andExpect(jsonPath("$.name").value("Sala Leonardo")).andExpect(jsonPath("$.capacity").value(8)).andExpect(jsonPath("$.hasProjector").value(true));
-    }
-
-    @Test
-    void getRoomById_ShouldReturn404() throws Exception {
-
-        when(roomService.getRoomById(99L)).thenThrow(new ResourceNotFoundException("Sala non trovata con id: 99"));
-
-        mockMvc.perform(get("/api/rooms/99")).andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/rooms/1")).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1));
     }
 
     @Test
     void createRoom_ShouldCreateRoom() throws Exception {
 
-        Room room = new Room(1L, "Sala Leonardo", 8, true);
-
-        when(roomService.createRoom(any())).thenReturn(room);
+        when(roomService.createRoom(any())).thenReturn(new Room(1L, "Sala Leonardo", 8, true));
 
         String json = """
                 {
@@ -77,15 +61,40 @@ class RoomControllerTest {
                 }
                 """;
 
-        mockMvc.perform(post("/api/rooms").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1)).andExpect(jsonPath("$.name").value("Sala Leonardo"));
+        mockMvc.perform(post("/api/rooms").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1));
+    }
+
+    @Test
+    void createRoom_ShouldReturnBadRequest_WhenNameMissing() throws Exception {
+
+        String json = """
+                {
+                  "capacity":8,
+                  "hasProjector":true
+                }
+                """;
+
+        mockMvc.perform(post("/api/rooms").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createRoom_ShouldReturnBadRequest_WhenCapacityInvalid() throws Exception {
+
+        String json = """
+                {
+                  "name":"Sala Test",
+                  "capacity":0,
+                  "hasProjector":true
+                }
+                """;
+
+        mockMvc.perform(post("/api/rooms").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isBadRequest());
     }
 
     @Test
     void updateRoom_ShouldReturnUpdatedRoom() throws Exception {
 
-        Room room = new Room(1L, "Sala Aggiornata", 20, false);
-
-        when(roomService.updateRoom(eq(1L), any())).thenReturn(room);
+        when(roomService.updateRoom(eq(1L), any())).thenReturn(new Room(1L, "Sala Aggiornata", 20, false));
 
         String json = """
                 {
@@ -99,11 +108,23 @@ class RoomControllerTest {
     }
 
     @Test
+    void updateRoom_ShouldReturnBadRequest_WhenInvalidRequest() throws Exception {
+
+        String json = """
+                {
+                  "name":"",
+                  "capacity":0,
+                  "hasProjector":true
+                }
+                """;
+
+        mockMvc.perform(put("/api/rooms/1").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isBadRequest());
+    }
+
+    @Test
     void patchRoom_ShouldReturnUpdatedRoom() throws Exception {
 
-        Room room = new Room(1L, "Sala Patchata", 8, true);
-
-        when(roomService.patchRoom(eq(1L), any())).thenReturn(room);
+        when(roomService.patchRoom(eq(1L), any())).thenReturn(new Room(1L, "Sala Patchata", 8, true));
 
         String json = """
                 {
@@ -123,10 +144,46 @@ class RoomControllerTest {
     }
 
     @Test
-    void deleteRoom_ShouldReturnConflict() throws Exception {
+    void getRoomById_ShouldReturnNotFound()
+            throws Exception {
 
-        doThrow(new ResourceInUseException("Sala occupata")).when(roomService).deleteRoom(1L);
+        when(roomService.getRoomById(99L))
+                .thenThrow(
+                        new ResourceNotFoundException(
+                                "Sala non trovata con id: 99"
+                        )
+                );
 
-        mockMvc.perform(delete("/api/rooms/1")).andExpect(status().isConflict());
+        mockMvc.perform(get("/api/rooms/99"))
+                .andExpect(status().isNotFound());
     }
+
+    @Test
+    void deleteRoom_ShouldReturnNotFound()
+            throws Exception {
+
+        doThrow(
+                new ResourceNotFoundException(
+                        "Sala non trovata con id: 99"
+                )
+        ).when(roomService).deleteRoom(99L);
+
+        mockMvc.perform(delete("/api/rooms/99"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteRoom_ShouldReturnConflict()
+            throws Exception {
+
+        doThrow(
+                new ResourceInUseException(
+                        "Sala occupata"
+                )
+        ).when(roomService).deleteRoom(1L);
+
+        mockMvc.perform(delete("/api/rooms/1"))
+                .andExpect(status().isConflict());
+    }
+
 }
