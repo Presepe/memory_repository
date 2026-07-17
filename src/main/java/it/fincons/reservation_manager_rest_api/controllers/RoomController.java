@@ -3,11 +3,13 @@ package it.fincons.reservation_manager_rest_api.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import it.fincons.reservation_manager_rest_api.dto.CreateRoomRequest;
+import it.fincons.reservation_manager_rest_api.dto.PatchRoomRequest;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
 import it.fincons.reservation_manager_rest_api.model.Room;
 import it.fincons.reservation_manager_rest_api.service.RoomService;
-import it.fincons.reservation_manager_rest_api.dto.CreateRoomRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +28,7 @@ public class RoomController {
             @ApiResponse(responseCode = "404", description = "Rooms not found")
     })
     @GetMapping
-    public List<Room> getAllRooms(){
+    public List<Room> getAllRooms() {
         return service.getAllRooms();
     }
 
@@ -36,7 +38,7 @@ public class RoomController {
             @ApiResponse(responseCode = "404", description = "Room not found")
     })
     @GetMapping("/{id}")
-    public Room  getRoomById(@PathVariable Long id) throws ResourceNotFoundException {
+    public Room getRoomById(@PathVariable Long id) throws ResourceNotFoundException {
         return service.getRoomById(id);
     }
 
@@ -46,7 +48,7 @@ public class RoomController {
             @ApiResponse(responseCode = "400", description = "Room not created")
     })
     @PostMapping
-    public Room  createRoom(@RequestBody CreateRoomRequest  room){
+    public Room createRoom(@Valid @RequestBody CreateRoomRequest room) {
         return service.createRoom(room);
     }
 
@@ -58,7 +60,7 @@ public class RoomController {
     })
 
     @PutMapping("/{id}")
-    public Room  updateRoom(@PathVariable Long id, @RequestBody CreateRoomRequest  updatedRoom) throws ResourceNotFoundException {
+    public Room updateRoom(@PathVariable Long id, @Valid @RequestBody CreateRoomRequest updatedRoom) throws ResourceNotFoundException {
         return service.updateRoom(id, updatedRoom);
     }
 
@@ -70,7 +72,7 @@ public class RoomController {
     })
 
     @PatchMapping("/{id}")
-    public Room  patch(@PathVariable Long id, @RequestBody CreateRoomRequest  updatedRoom) throws ResourceNotFoundException {
+    public Room patch(@PathVariable Long id, @RequestBody PatchRoomRequest updatedRoom) throws ResourceNotFoundException {
         return service.patchRoom(id, updatedRoom);
     }
 

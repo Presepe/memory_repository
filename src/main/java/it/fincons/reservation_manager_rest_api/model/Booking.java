@@ -11,67 +11,66 @@ public class Booking {
     private LocalTime startTime;
     private LocalTime endTime;
 
-    //costruttore
+
     public Booking(Long id, Long roomId, Long userId, LocalDate date, LocalTime startTime, LocalTime endTime) {
-        this.id=id;
-        this.roomId=roomId;
-        this.userId=userId;
-        this.date=date;
-        this.startTime=startTime;
-        this.endTime=endTime;
+        this.id = id;
+        this.roomId = roomId;
+        this.userId = userId;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public Booking() {
     }
 
-    //getter
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getRoomId() {
         return roomId;
     }
 
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
+    }
+
     public Long getUserId() {
         return userId;
     }
 
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+
     public LocalDate getDate() {
         return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public LocalTime getStartTime() {
         return startTime;
     }
 
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
     public LocalTime getEndTime() {
         return endTime;
     }
 
-    //setter
-    public void setId(Long id) {
-        this.id= id;
-    }
-
-    public void setRoomId(Long roomId) {
-        this.roomId=roomId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId=userId;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date=date;
-    }
-
-    public void setStartTime(LocalTime startTime) {
-        this.startTime=startTime;
-    }
-
     public void setEndTime(LocalTime endTime) {
-        this.endTime=endTime;
+        this.endTime = endTime;
     }
 
     @Override
@@ -80,8 +79,8 @@ public class Booking {
                 "id='" + id + '\'' +
                 ", roomId='" + roomId + '\'' +
                 ", userId=" + userId + '\'' +
-                " , date=" + date + '\''+
-                " , startTime=" + startTime + '\''+
+                " , date=" + date + '\'' +
+                " , startTime=" + startTime + '\'' +
                 " , endTime=" + endTime +
                 '}';
     }
