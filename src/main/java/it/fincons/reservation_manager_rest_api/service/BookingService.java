@@ -36,25 +36,25 @@ public class BookingService {
         return bookingRepository.findAll();
     }
 
-    public Booking getBookingById(Long id) {
+    public Booking getBookingById(Long id) throws ResourceNotFoundException {
         validateBookingExists(id);
 
         return bookingRepository.findById(id).get();
     }
 
-    public List<Booking> getBookingsByRoomId(Long roomId) {
+    public List<Booking> getBookingsByRoomId(Long roomId) throws ResourceNotFoundException {
         validateRoomExists(roomId);
 
         return bookingRepository.findByRoomId(roomId);
     }
 
-    public List<Booking> getBookingsByUserId(Long userId) {
+    public List<Booking> getBookingsByUserId(Long userId) throws ResourceNotFoundException {
         validateUserExists(userId);
 
         return bookingRepository.findByUserId(userId);
     }
 
-    public Booking createBooking(CreateBookingRequest request) {
+    public Booking createBooking(CreateBookingRequest request) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
         validateRequest(request, null);
 
         Booking booking = new Booking();
@@ -73,7 +73,7 @@ public class BookingService {
     public Booking updateBooking(
             Long id,
             CreateBookingRequest request
-    ) {
+    ) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
         Booking existingBooking = getBookingById(id);
 
         validateRequest(request, id);
@@ -87,7 +87,7 @@ public class BookingService {
         return bookingRepository.save(existingBooking);
     }
 
-    public void deleteBooking(Long id) {
+    public void deleteBooking(Long id) throws ResourceNotFoundException {
         if (!bookingRepository.existsById(id)) {
             throw new ResourceNotFoundException(
                     "Prenotazione non trovata con id: " + id
@@ -100,7 +100,7 @@ public class BookingService {
     private void validateRequest(
             CreateBookingRequest request,
             Long bookingIdToExclude
-    ) {
+    ) throws BookingConflictException, ResourceNotFoundException, InvalidBookingException {
         validateRoomExists(request.getRoomId());
 
         validateUserExists(request.getUserId());
@@ -119,7 +119,7 @@ public class BookingService {
         );
     }
 
-    private void validateBookingExists(Long id) {
+    private void validateBookingExists(Long id) throws ResourceNotFoundException {
         if (!bookingRepository.existsById(id)) {
             throw new ResourceNotFoundException(
                     "Prenotazione non trovata con id: " + id
@@ -127,7 +127,7 @@ public class BookingService {
         }
     }
 
-    private void validateRoomExists(Long roomId) {
+    private void validateRoomExists(Long roomId) throws ResourceNotFoundException {
         if (!roomRepository.existsById(roomId)) {
             throw new ResourceNotFoundException(
                     "Sala non trovata con id: " + roomId
@@ -135,7 +135,7 @@ public class BookingService {
         }
     }
 
-    private void validateUserExists(Long userId) {
+    private void validateUserExists(Long userId) throws ResourceNotFoundException {
         if (!userRepository.existsById(userId)) {
             throw new ResourceNotFoundException(
                     "Utente non trovato con id: " + userId
@@ -146,7 +146,7 @@ public class BookingService {
     private void validateBookingTimes(
             LocalTime startTime,
             LocalTime endTime
-    ) {
+    ) throws InvalidBookingException {
         if (!endTime.isAfter(startTime)) {
             throw new InvalidBookingException(
                     "L'orario di fine deve essere successivo "
@@ -161,7 +161,7 @@ public class BookingService {
             LocalDate date,
             LocalTime startTime,
             LocalTime endTime
-    ) {
+    ) throws BookingConflictException {
         List<Booking> roomBookings =
                 bookingRepository.findByRoomId(roomId);
 

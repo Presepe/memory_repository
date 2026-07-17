@@ -30,13 +30,13 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User getUserById(Long id) {
+    public User getUserById(Long id) throws ResourceNotFoundException {
         validateUserExists(id);
 
         return userRepository.findById(id).get();
     }
 
-    public User createUser(CreateUserRequest request) {
+    public User createUser(CreateUserRequest request) throws DuplicateEmailException {
         validateEmailUnique(request.getEmail());
 
         User user = new User();
@@ -50,7 +50,7 @@ public class UserService {
     public User updateUser(
             Long id,
             CreateUserRequest request
-    ) {
+    ) throws DuplicateEmailException, ResourceNotFoundException {
         validateUserExists(id);
 
         User existingUser = userRepository.findById(id).get();
@@ -68,7 +68,7 @@ public class UserService {
         return userRepository.save(existingUser);
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(Long id) throws ResourceInUseException, ResourceNotFoundException {
         validateUserExists(id);
 
         if (!bookingRepository.findByUserId(id).isEmpty()) {
@@ -82,7 +82,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    private void validateUserExists(Long id) {
+    private void validateUserExists(Long id) throws ResourceNotFoundException {
         if (!userRepository.existsById(id)) {
             throw new ResourceNotFoundException(
                     "Utente non trovato con id: " + id
@@ -90,7 +90,7 @@ public class UserService {
         }
     }
 
-    private void validateEmailUnique(String email) {
+    private void validateEmailUnique(String email) throws DuplicateEmailException {
         if (userRepository.existsByEmail(email)) {
             throw new DuplicateEmailException(
                     "Esiste già un utente con e-mail: " + email

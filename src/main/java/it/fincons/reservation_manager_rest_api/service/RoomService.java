@@ -28,7 +28,7 @@ public class RoomService {
         return roomRepository.findAll();
     }
 
-    public Room getRoomById(Long id) {
+    public Room getRoomById(Long id) throws ResourceNotFoundException {
         validateRoomExists(id);
 
         return roomRepository.findById(id).get();
@@ -47,7 +47,7 @@ public class RoomService {
     public Room updateRoom(
             Long id,
             CreateRoomRequest request
-    ) {
+    ) throws ResourceNotFoundException {
         validateRoomExists(id);
 
         Room existingRoom = roomRepository.findById(id).get();
@@ -62,7 +62,7 @@ public class RoomService {
     public Room patchRoom(
             Long id,
             CreateRoomRequest request
-    ) {
+    ) throws ResourceNotFoundException {
         validateRoomExists(id);
 
         Room existingRoom = roomRepository.findById(id).get();
@@ -84,7 +84,7 @@ public class RoomService {
         return roomRepository.save(existingRoom);
     }
 
-    public void deleteRoom(Long id) {
+    public void deleteRoom(Long id) throws ResourceInUseException, ResourceNotFoundException {
         validateRoomExists(id);
 
         if (!bookingRepository.findByRoomId(id).isEmpty()) {
@@ -98,7 +98,7 @@ public class RoomService {
         roomRepository.deleteById(id);
     }
 
-    private void validateRoomExists(Long id) {
+    private void validateRoomExists(Long id) throws ResourceNotFoundException {
         if (!roomRepository.existsById(id)) {
             throw new ResourceNotFoundException(
                     "Sala non trovata con id: " + id
