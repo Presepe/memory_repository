@@ -3,12 +3,13 @@ package it.fincons.reservation_manager_rest_api.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import it.fincons.reservation_manager_rest_api.dto.CreateBookingRequest;
 import it.fincons.reservation_manager_rest_api.exception.BookingConflictException;
 import it.fincons.reservation_manager_rest_api.exception.InvalidBookingException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
 import it.fincons.reservation_manager_rest_api.model.Booking;
 import it.fincons.reservation_manager_rest_api.service.BookingService;
-import it.fincons.reservation_manager_rest_api.dto.CreateBookingRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class BookingController {
             @ApiResponse(responseCode = "404", description = "Bookings not found")
     })
     @GetMapping("/bookings")
-    public List<Booking> getAllBookings(){
+    public List<Booking> getAllBookings() {
         return service.getAllBookings();
     }
 
@@ -46,7 +47,7 @@ public class BookingController {
             @ApiResponse(responseCode = "400", description = "Booking not created")
     })
     @PostMapping("/bookings")
-    public Booking  createBooking(@RequestBody CreateBookingRequest  request ) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
+    public Booking createBooking(@Valid @RequestBody CreateBookingRequest request) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
         return service.createBooking(request);
     }
 
@@ -57,7 +58,7 @@ public class BookingController {
     })
 
     @PutMapping("/bookings/{id}")
-    public Booking  updateBooking(@PathVariable Long id, @RequestBody CreateBookingRequest  updatedBooking) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
+    public Booking updateBooking(@PathVariable Long id, @Valid @RequestBody CreateBookingRequest updatedBooking) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
         return service.updateBooking(id, updatedBooking);
     }
 
@@ -77,7 +78,7 @@ public class BookingController {
             @ApiResponse(responseCode = "404", description = "Bookings not found")
     })
     @GetMapping("/rooms/{roomId}/bookings")
-    public List<Booking > getBookingByRoomId(@PathVariable Long roomId) throws ResourceNotFoundException {
+    public List<Booking> getBookingByRoomId(@PathVariable Long roomId) throws ResourceNotFoundException {
         return service.getBookingsByRoomId(roomId);
     }
 
@@ -87,7 +88,7 @@ public class BookingController {
             @ApiResponse(responseCode = "404", description = "Bookings not found")
     })
     @GetMapping("/users/{userId}/bookings")
-    public List<Booking > getBookingByUserId(@PathVariable Long userId) throws ResourceNotFoundException {
+    public List<Booking> getBookingByUserId(@PathVariable Long userId) throws ResourceNotFoundException {
         return service.getBookingsByUserId(userId);
     }
 }

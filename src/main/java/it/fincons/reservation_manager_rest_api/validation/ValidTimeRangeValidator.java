@@ -1,13 +1,11 @@
 package it.fincons.reservation_manager_rest_api.validation;
 
+import it.fincons.reservation_manager_rest_api.dto.CreateBookingRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 import java.time.LocalTime;
 
-import it.fincons.reservation_manager_rest_api.dto.CreateBookingRequest;
-
-//contiene la logica del controllo
 public class ValidTimeRangeValidator implements ConstraintValidator<ValidTimeRange, CreateBookingRequest> {
 
 

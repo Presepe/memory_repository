@@ -1,6 +1,7 @@
 package it.fincons.reservation_manager_rest_api.service;
 
 import it.fincons.reservation_manager_rest_api.dto.CreateRoomRequest;
+import it.fincons.reservation_manager_rest_api.dto.PatchRoomRequest;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
 import it.fincons.reservation_manager_rest_api.model.Room;
@@ -61,7 +62,7 @@ public class RoomService {
 
     public Room patchRoom(
             Long id,
-            CreateRoomRequest request
+            PatchRoomRequest request
     ) throws ResourceNotFoundException {
         validateRoomExists(id);
 
