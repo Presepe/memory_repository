@@ -40,4 +40,20 @@ public class BookingServiceTest {
                 }
         );
     }
+
+    @Test
+    void createBooking_shouldNotCreateBooking_whenUserNotExist(){
+        CreateBookingRequest bookingRequest = CreateBookingRequestFixture.createValidRequest();
+
+        when(roomRepository.existsById(bookingRequest.getRoomId())).thenReturn(true);
+        when(userRepository.existsById(bookingRequest.getUserId())).thenReturn(false);
+        assertThrows(ResourceNotFoundException.class, () -> {
+            systemUnderTest.createBooking(bookingRequest);
+        });
+    }
+
+    @Test
+    void createBooking_shouldNotCreateBooking_whenStartTimeGreaterThenEndTime(){
+
+    }
 }
