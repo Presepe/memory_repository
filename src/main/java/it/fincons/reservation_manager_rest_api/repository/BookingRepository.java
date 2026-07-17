@@ -4,8 +4,6 @@ package it.fincons.reservation_manager_rest_api.repository;
 import  it.fincons.reservation_manager_rest_api.model.Booking;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -14,20 +12,6 @@ public class BookingRepository {
 
     private final Map<Long, Booking> bookings = new HashMap<>();
     private final AtomicLong idGenerator = new AtomicLong(1);
-
-    public BookingRepository() {
-
-        // Dato iniziale
-        Booking booking = new Booking();
-
-        booking.setRoomId(1L);
-        booking.setUserId(1L);
-        booking.setDate(LocalDate.of(2026, 7, 20));
-        booking.setStartTime(LocalTime.of(10, 0));
-        booking.setEndTime(LocalTime.of(12, 0));
-
-        save(booking);
-    }
 
     public List<Booking> findAll() {
         return new ArrayList<>(bookings.values());

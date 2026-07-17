@@ -1,27 +1,18 @@
-package it.fincons.reservation_manager_rest_api.repository;
+import it.fincons.reservation_manager_rest_api.model.Room;
 
-import java.util.HashMap;
+import org.springframework.stereotype.Repository;
+
 import java.util.Map;
 import java.util.List;
+import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicLong;
-import org.springframework.stereotype.Repository;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class RoomRepository {
-
     private final Map<Long, Room> rooms = new HashMap<>();
     private final AtomicLong sequence = new AtomicLong(0);
-
-    //primo dato iniziale
-    public RoomRepository() {
-        save(new Room(null, "Sala Pescuma", 8, true));
-        save(new Room(null, "Sala Riunioni", 12, true));
-        save(new Room(null, "Sala Relax", 4, false));
-    }
-
-
 
     public synchronized Room save(Room room) {
 
