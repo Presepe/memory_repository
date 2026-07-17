@@ -49,4 +49,9 @@ public class UserRepository {
     public boolean existsById(Long id) {
         return userMap.containsKey(id);
     }
+
+    public boolean existsByEmail(String email)
+    {
+        return findByEmail(email).isPresent();
+    }
 }
