@@ -9,6 +9,7 @@ import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundExcepti
 import it.fincons.reservation_manager_rest_api.model.User;
 import it.fincons.reservation_manager_rest_api.service.UserService;
 import it.fincons.reservation_manager_rest_api.dto.CreateUserRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,7 +49,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "User not created")
     })
     @PostMapping
-    public User  createUser(@RequestBody CreateUserRequest  user ) throws DuplicateEmailException {
+    public User  createUser(@Valid @RequestBody CreateUserRequest  user ) throws DuplicateEmailException {
         return service.createUser(user);
     }
 
@@ -59,7 +60,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "User not updated")
     })
     @PutMapping("/{id}")
-    public User  update(@PathVariable Long id, @RequestBody CreateUserRequest updatedUser) throws DuplicateEmailException, ResourceNotFoundException {
+    public User  update(@PathVariable Long id,@Valid @RequestBody CreateUserRequest updatedUser) throws DuplicateEmailException, ResourceNotFoundException {
         return service.updateUser(id, updatedUser);
     }
 
