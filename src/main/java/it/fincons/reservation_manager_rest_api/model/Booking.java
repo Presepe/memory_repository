@@ -21,6 +21,9 @@ public class Booking {
         this.endTime=endTime;
     }
 
+    public Booking() {
+    }
+
     //getter
     public Long getId() {
         return id;
