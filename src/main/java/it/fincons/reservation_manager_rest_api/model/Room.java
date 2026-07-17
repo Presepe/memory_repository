@@ -15,6 +15,9 @@ public class Room {
             this.hasProjector=hasProjector;
         }
 
+        public Room(){
+
+        }
         //getter
         public Long getId(){
             return id;
