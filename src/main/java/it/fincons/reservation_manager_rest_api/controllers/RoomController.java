@@ -72,7 +72,7 @@ public class RoomController {
     })
 
     @PatchMapping("/{id}")
-    public Room patch(@PathVariable Long id, @RequestBody PatchRoomRequest updatedRoom) throws ResourceNotFoundException {
+    public Room patch(@PathVariable Long id, @Valid @RequestBody PatchRoomRequest updatedRoom) throws ResourceNotFoundException {
         return service.patchRoom(id, updatedRoom);
     }
 
