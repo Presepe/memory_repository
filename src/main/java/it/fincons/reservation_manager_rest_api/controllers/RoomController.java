@@ -3,8 +3,12 @@ package it.fincons.reservation_manager_rest_api.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import it.fincons.reservation_manager_rest_api.model.Room;
+import it.fincons.reservation_manager_rest_api.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/rooms")
@@ -19,8 +23,8 @@ public class RoomController {
             @ApiResponse(responseCode = "404", description = "Rooms not found")
     })
     @GetMapping
-    public List<RoomDto> getAll(){
-        return service.getAll();
+    public List<Room> getAllRooms(){
+        return service.getAllRooms();
     }
 
     @Operation(summary = "Find room by ID")
@@ -29,8 +33,8 @@ public class RoomController {
             @ApiResponse(responseCode = "404", description = "Room not found")
     })
     @GetMapping("/{id}")
-    public RoomDto getById(@PathVariable Long id){
-        return service.getById(id);
+    public Room  getRoomById(@PathVariable Long id){
+        return service.getRoomById(id);
     }
 
     @Operation(summary = "Create new room")
@@ -39,8 +43,8 @@ public class RoomController {
             @ApiResponse(responseCode = "400", description = "Room not created")
     })
     @PostMapping
-    public RoomDto create(@RequestBody RoomDto roomDto){
-        return service.createRoom(roomDto);
+    public Room  createRoom(@RequestBody CreateRoomRequest  room){
+        return service.createRoom(room);
     }
 
     @Operation(summary = "Update a room by ID")
@@ -51,7 +55,7 @@ public class RoomController {
     })
 
     @PutMapping("/{id}")
-    public RoomDto update(@PathVariable Long id, @RequestBody RoomDto updatedRoom){
+    public Room  updateRoom(@PathVariable Long id, @RequestBody CreateRoomRequest  updatedRoom){
         return service.updateRoom(id, updatedRoom);
     }
 
@@ -63,7 +67,7 @@ public class RoomController {
     })
 
     @PatchMapping("/{id}")
-    public RoomDto patch(@PathVariable Long id, @RequestBody RoomDto updatedRoom){
+    public Room  patch(@PathVariable Long id, @RequestBody CreateRoomRequest  updatedRoom){
         return service.patchRoom(id, updatedRoom);
     }
 
@@ -73,7 +77,7 @@ public class RoomController {
             @ApiResponse(responseCode = "400", description = "Room not deleted")
     })
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id){
+    public void deleteRoom(@PathVariable Long id){
         service.deleteRoom(id);
     }
 }

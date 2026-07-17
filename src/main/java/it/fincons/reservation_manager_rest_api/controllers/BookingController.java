@@ -3,8 +3,12 @@ package it.fincons.reservation_manager_rest_api.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import it.fincons.reservation_manager_rest_api.model.Booking;
+import it.fincons.reservation_manager_rest_api.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -18,8 +22,8 @@ public class BookingController {
             @ApiResponse(responseCode = "404", description = "Bookings not found")
     })
     @GetMapping("/bookings")
-    public List<BookingDto> getAll(){
-        return service.getAll();
+    public List<Booking> getAllBookings(){
+        return service.getAllBookings();
     }
 
     @Operation(summary = "Find booking by ID")
@@ -28,8 +32,8 @@ public class BookingController {
             @ApiResponse(responseCode = "404", description = "Booking not found")
     })
     @GetMapping("/bookings/{id}")
-    public BookingDto getById(@PathVariable Long id){
-        return service.getById(id);
+    public Booking getBookingById(@PathVariable Long id){
+        return service.getBookingById(id);
     }
 
     @Operation(summary = "Create new booking")
@@ -38,8 +42,8 @@ public class BookingController {
             @ApiResponse(responseCode = "400", description = "Booking not created")
     })
     @PostMapping("/bookings")
-    public BookingDto create(@RequestBody BookingDto bookingDto){
-        return service.createBooking(bookingDto);
+    public Booking  createBooking(@RequestBody CreateBookingRequest  request ){
+        return service.createBooking(request);
     }
 
     @Operation(summary = "Update a booking by ID")
@@ -49,7 +53,7 @@ public class BookingController {
     })
 
     @PutMapping("/bookings/{id}")
-    public BookingDto update(@PathVariable Long id, @RequestBody BookingDto updatedBooking){
+    public Booking  updateBooking(@PathVariable Long id, @RequestBody CreateBookingRequest  updatedBooking){
         return service.updateBooking(id, updatedBooking);
     }
 
@@ -59,7 +63,7 @@ public class BookingController {
             @ApiResponse(responseCode = "400", description = "Booking not deleted")
     })
     @DeleteMapping("/bookings/{id}")
-    public void delete(@PathVariable Long id){
+    public void deleteBooking(@PathVariable Long id){
         service.deleteBooking(id);
     }
 
@@ -69,8 +73,8 @@ public class BookingController {
             @ApiResponse(responseCode = "404", description = "Bookings not found")
     })
     @GetMapping("/rooms/{roomId}/bookings")
-    public List<BookingDto> getBookingByRoomId(@PathVariable Long roomId){
-        return service.getBookingByRoomId(roomId);
+    public List<Booking > getBookingByRoomId(@PathVariable Long roomId){
+        return service.getBookingsByRoomId(roomId);
     }
 
     @Operation(summary = "Find all bookings by user ID")
@@ -79,7 +83,7 @@ public class BookingController {
             @ApiResponse(responseCode = "404", description = "Bookings not found")
     })
     @GetMapping("/users/{userId}/bookings")
-    public List<BookingDto> getBookingByUserId(@PathVariable Long userId){
-        return service.getBookingByUserId(userId);
+    public List<Booking > getBookingByUserId(@PathVariable Long userId){
+        return service.getBookingsByUserId(userId);
     }
 }
