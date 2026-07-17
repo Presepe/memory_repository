@@ -27,7 +27,7 @@ public class DataInitializer {
             Room room1 = roomRepository.save(
                     new Room(
                             null,
-                            "Sala Leonardo",
+                            "Sala Pescuma",
                             8,
                             true
                     )
@@ -36,7 +36,7 @@ public class DataInitializer {
             Room room2 = roomRepository.save(
                     new Room(
                             null,
-                            "Sala Galileo",
+                            "Sala Relax",
                             12,
                             false
                     )
@@ -45,16 +45,16 @@ public class DataInitializer {
             User user1 = userRepository.save(
                     new User(
                             null,
-                            "Mario Rossi",
-                            "mario.rossi@example.com"
+                            "Mario Giordano",
+                            "mario.giordano@example.com"
                     )
             );
 
             User user2 = userRepository.save(
                     new User(
                             null,
-                            "Giulia Bianchi",
-                            "giulia.bianchi@example.com"
+                            "Samuele Lamanna",
+                            "samuele.lamanna@example.com"
                     )
             );
 
