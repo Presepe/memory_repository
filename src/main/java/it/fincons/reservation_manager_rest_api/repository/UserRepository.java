@@ -3,11 +3,7 @@ package it.fincons.reservation_manager_rest_api.repository;
 import it.fincons.reservation_manager_rest_api.model.User;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
@@ -50,8 +46,7 @@ public class UserRepository {
         return userMap.containsKey(id);
     }
 
-    public boolean existsByEmail(String email)
-    {
+    public boolean existsByEmail(String email) {
         return findByEmail(email).isPresent();
     }
 }

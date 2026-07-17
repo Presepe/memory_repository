@@ -1,8 +1,7 @@
 package it.fincons.reservation_manager_rest_api.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import it.fincons.reservation_manager_rest_api.validation.ValidTimeRange;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
