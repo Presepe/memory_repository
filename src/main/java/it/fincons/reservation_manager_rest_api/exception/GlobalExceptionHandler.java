@@ -53,8 +53,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-
-
+    @ExceptionHandler(DuplicateEmailException.class)
     public ResponseEntity<ApiError> handleDuplicateEmailException(DuplicateEmailException ex, WebRequest request){
         ApiError error = new ApiError(
                 HttpStatus.CONFLICT.value(),
