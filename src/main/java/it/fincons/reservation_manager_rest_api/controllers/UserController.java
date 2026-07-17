@@ -3,8 +3,12 @@ package it.fincons.reservation_manager_rest_api.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import it.fincons.reservation_manager_rest_api.model.User;
+import it.fincons.reservation_manager_rest_api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -19,8 +23,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Users not found")
     })
     @GetMapping
-    public List<UserDto> getAll(){
-        return service.getAll();
+    public List<User> getAllUsers(){
+        return service.getAllUsers();
     }
 
     @Operation(summary = "Find user by ID")
@@ -29,8 +33,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @GetMapping("/{id}")
-    public UserDto getById(@PathVariable Long id){
-        return service.getById(id);
+    public User  getUserById(@PathVariable Long id){
+        return service.getUserById(id);
     }
 
     @Operation(summary = "Create new user")
@@ -40,8 +44,8 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "User not created")
     })
     @PostMapping
-    public UserDto create(@RequestBody UserDto userDto){
-        return service.createUser(userDto);
+    public User  createUser(@RequestBody CreateUserRequest  user ){
+        return service.createUser(user);
     }
 
     @Operation(summary = "Update a user by ID")
@@ -51,7 +55,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "User not updated")
     })
     @PutMapping("/{id}")
-    public UserDto update(@PathVariable Long id, @RequestBody UserDto updatedUser){
+    public User  update(@PathVariable Long id, @RequestBody CreateUserRequest updatedUser){
         return service.updateUser(id, updatedUser);
     }
 
