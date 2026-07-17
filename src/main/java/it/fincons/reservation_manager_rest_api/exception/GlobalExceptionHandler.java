@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(DuplicateEmailException.class)
-    public ResponseEntity<ApiError> handleDuplicateEmailException(BookingConflictException ex, WebRequest request){
+    public ResponseEntity<ApiError> handleDuplicateEmailException(DuplicateEmailException ex, WebRequest request){
         ApiError error = new ApiError(
                 HttpStatus.CONFLICT.value(),
                 HttpStatus.CONFLICT.getReasonPhrase(),
