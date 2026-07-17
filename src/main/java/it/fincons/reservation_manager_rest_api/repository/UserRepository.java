@@ -1,16 +1,18 @@
-import it.fincons.reservation_manager_rest_api.model.User;
+package it.fincons.reservation_manager_rest_api.repository;
 
+import it.fincons.reservation_manager_rest_api.model.User;
 import org.springframework.stereotype.Repository;
 
-import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class UserRepository {
+
     private final Map<Long, User> userMap = new HashMap<>();
     private final AtomicLong idGenerator = new AtomicLong(1);
 
