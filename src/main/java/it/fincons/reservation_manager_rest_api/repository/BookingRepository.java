@@ -1,0 +1,61 @@
+package it.fincons.reservation_manager_rest_api.repository;
+
+import it.fincons.reservation_manager_rest_api.model.Booking;
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
+
+@Repository
+public class BookingRepository {
+
+    private final Map<Long, Booking> bookings = new HashMap<>();
+    private final AtomicLong idGenerator = new AtomicLong(1);
+
+    public List<Booking> findAll() {
+        return new ArrayList<>(bookings.values());
+    }
+
+    public Optional<Booking> findById(Long id) {
+        return Optional.ofNullable(bookings.get(id));
+    }
+
+    public Booking save(Booking booking) {
+
+        if (booking.getId() == null) {
+            booking.setId(idGenerator.getAndIncrement());
+        }
+
+        bookings.put(booking.getId(), booking);
+
+        return booking;
+    }
+
+    public boolean existsById(Long id) {
+        return bookings.containsKey(id);
+    }
+
+    public void deleteById(Long id) {
+        bookings.remove(id);
+    }
+
+    public List<Booking> findByRoomId(Long roomId) {
+
+        return bookings.values()
+                .stream()
+                .filter(booking -> booking.getRoomId().equals(roomId))
+                .toList();
+    }
+
+    public List<Booking> findByUserId(Long userId) {
+
+        return bookings.values()
+                .stream()
+                .filter(booking -> booking.getUserId().equals(userId))
+                .toList();
+    }
+}
