@@ -17,9 +17,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
 public class BookingController {
     private final BookingService service;
+
+    public BookingController(BookingService service) {
+        this.service = service;
+    }
 
     @Operation(summary = "Find all bookings")
     @ApiResponses({
