@@ -4,6 +4,8 @@ import it.fincons.reservation_manager_rest_api.dto.CreateBookingRequest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 
 public class CreateBookingRequestFixture {
 
