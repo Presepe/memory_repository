@@ -7,6 +7,8 @@ import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundExcepti
 import it.fincons.reservation_manager_rest_api.fixture.BookingFixture;
 import it.fincons.reservation_manager_rest_api.fixture.CreateBookingRequestFixture;
 import it.fincons.reservation_manager_rest_api.model.Booking;
+import it.fincons.reservation_manager_rest_api.model.Room;
+import it.fincons.reservation_manager_rest_api.model.User;
 import it.fincons.reservation_manager_rest_api.repository.BookingRepository;
 import it.fincons.reservation_manager_rest_api.repository.RoomRepository;
 import it.fincons.reservation_manager_rest_api.repository.UserRepository;
@@ -25,14 +27,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import it.fincons.reservation_manager_rest_api.mapper.BookingMapper;
 
 @ExtendWith(MockitoExtension.class)
 public class BookingServiceTest {
-    @Mock private BookingRepository bookingRepository;
-    @Mock private RoomRepository roomRepository;
-    @Mock private UserRepository userRepository;
-    @InjectMocks private BookingService systemUnderTest;
 
+        @Mock private BookingRepository bookingRepository;
+        @Mock private RoomRepository roomRepository;
+        @Mock private UserRepository userRepository;
+        @Mock private BookingMapper bookingMapper;
+
+        @InjectMocks
+        private BookingService systemUnderTest;
     @Test
     void getAllBookings_shouldReturnAllBookings(){
         List<Booking> bookingList = BookingFixture.createBookingList();
@@ -151,29 +157,57 @@ public class BookingServiceTest {
 
     @Test
     void updateBooking_shouldUpdate_whenValidRequest() {
+
         Long bookingId = 1L;
-        CreateBookingRequest request = CreateBookingRequestFixture.createValidRequest();
-        Booking existingBooking = BookingFixture.createValidBooking(); // La prenotazione com'è attualmente sul DB
 
-        // Supera validateBookingExists (chiamato dentro getBookingById)
-        when(bookingRepository.existsById(bookingId)).thenReturn(true);
-        // Restituisce la prenotazione da aggiornare
-        when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(existingBooking));
+        CreateBookingRequest request =
+                CreateBookingRequestFixture.createValidRequest();
 
-        // Supera validateRequest
-        when(roomRepository.existsById(request.getRoomId())).thenReturn(true);
-        when(userRepository.existsById(request.getUserId())).thenReturn(true);
+        Booking existingBooking =
+                BookingFixture.createValidBooking();
 
-        // Restituisce lista vuota per evitare conflitti sulla stanza
-        when(bookingRepository.findByRoomId(request.getRoomId())).thenReturn(Collections.emptyList());
+        Booking mappedBooking = Booking.builder()
+                .room(
+                        Room.builder()
+                                .id(request.getRoomId())
+                                .build()
+                )
+                .user(
+                        User.builder()
+                                .id(request.getUserId())
+                                .build()
+                )
+                .date(request.getDate())
+                .startTime(request.getStartTime())
+                .endTime(request.getEndTime())
+                .build();
 
-        // Finge il salvataggio restituendo lo stesso oggetto che gli viene passato
-        when(bookingRepository.save(any(Booking.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(bookingRepository.existsById(bookingId))
+                .thenReturn(true);
 
-        Booking result = systemUnderTest.updateBooking(bookingId, request);
+        when(bookingRepository.findById(bookingId))
+                .thenReturn(Optional.of(existingBooking));
 
-        assertEquals(request.getRoomId(), result.getRoomId());
-        assertEquals(request.getUserId(), result.getUser());
+        when(roomRepository.existsById(request.getRoomId()))
+                .thenReturn(true);
+
+        when(userRepository.existsById(request.getUserId()))
+                .thenReturn(true);
+
+        when(bookingRepository.findByRoomId(request.getRoomId()))
+                .thenReturn(Collections.emptyList());
+
+        when(bookingMapper.toEntity(any(CreateBookingRequest.class)))
+                .thenReturn(mappedBooking);
+
+        when(bookingRepository.save(any(Booking.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Booking result =
+                systemUnderTest.updateBooking(bookingId, request);
+
+        assertEquals(request.getRoomId(), result.getRoom().getId());
+        assertEquals(request.getUserId(), result.getUser().getId());
     }
 
     @Test

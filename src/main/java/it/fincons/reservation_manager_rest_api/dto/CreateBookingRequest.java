@@ -2,10 +2,14 @@ package it.fincons.reservation_manager_rest_api.dto;
 
 import it.fincons.reservation_manager_rest_api.validation.ValidTimeRange;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Setter
+@Getter
 @ValidTimeRange
 public class CreateBookingRequest {
 
@@ -24,43 +28,4 @@ public class CreateBookingRequest {
     @NotNull(message = "L'orario di fine è obbligatorio")
     private LocalTime endTime;
 
-    public Long getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public LocalTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
-    }
 }

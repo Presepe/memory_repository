@@ -6,6 +6,7 @@ import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
 import it.fincons.reservation_manager_rest_api.model.Booking;
 import it.fincons.reservation_manager_rest_api.model.Room;
+import it.fincons.reservation_manager_rest_api.model.User;
 import it.fincons.reservation_manager_rest_api.repository.BookingRepository;
 import it.fincons.reservation_manager_rest_api.repository.RoomRepository;
 import org.junit.jupiter.api.Test;
@@ -169,7 +170,7 @@ class RoomServiceTest {
     @Test
     void deleteRoom_ShouldThrowResourceInUseException() {
 
-        Booking booking = new Booking(1L, 1L, 1L, null, null, null);
+        Booking booking = new Booking(1L, Room.builder().id(1L).build(), User.builder().id(1L).build(), null, null, null);
 
         when(roomRepository.existsById(1L)).thenReturn(true);
 

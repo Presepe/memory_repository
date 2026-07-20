@@ -6,18 +6,23 @@ import it.fincons.reservation_manager_rest_api.model.Room;
 import it.fincons.reservation_manager_rest_api.model.User;
 import it.fincons.reservation_manager_rest_api.repository.RoomRepository;
 import it.fincons.reservation_manager_rest_api.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class BookingMapper {
 
-    private static RoomRepository roomRepository;
-    private static UserRepository userRepository;
+    private final RoomRepository roomRepository;
+    private final UserRepository userRepository;
 
-    public static Booking toEntity(CreateBookingRequest request) {
+    public Booking toEntity(CreateBookingRequest request) {
 
-        Room room = roomRepository.findById(request.getRoomId()).orElse(null);
-        User user = userRepository.findById(request.getUserId()).orElse(null);
+        Room room = roomRepository.findById(request.getRoomId())
+                .orElse(null);
+
+        User user = userRepository.findById(request.getUserId())
+                .orElse(null);
 
         return Booking.builder()
                 .room(room)

@@ -6,6 +6,7 @@ import it.fincons.reservation_manager_rest_api.dto.CreateBookingRequest;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
 import it.fincons.reservation_manager_rest_api.fixture.BookingFixture;
 import it.fincons.reservation_manager_rest_api.fixture.CreateBookingRequestFixture;
+import it.fincons.reservation_manager_rest_api.mapper.RoomMapper;
 import it.fincons.reservation_manager_rest_api.model.Booking;
 import it.fincons.reservation_manager_rest_api.service.BookingService;
 import org.junit.jupiter.api.Test;
@@ -53,14 +54,21 @@ class BookingControllerTest {
 
     @Test
     void getBookingById_shouldReturnBookingAnd200_whenFound() throws Exception {
+
         Long bookingId = 1L;
         Booking mockBooking = BookingFixture.createValidBooking();
-        when(bookingService.getBookingById(bookingId)).thenReturn(mockBooking);
+
+        when(bookingService.getBookingById(bookingId))
+                .thenReturn(mockBooking);
 
         mockMvc.perform(get("/api/bookings/{id}", bookingId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(mockBooking.getId()))
-                .andExpect(jsonPath("$.roomId").value(mockBooking.getRoomId()));
+                .andExpect(jsonPath("$.id")
+                        .value(mockBooking.getId()))
+                .andExpect(jsonPath("$.room.id")
+                        .value(mockBooking.getRoom().getId()))
+                .andExpect(jsonPath("$.user.id")
+                        .value(mockBooking.getUser().getId()));
     }
 
     @Test

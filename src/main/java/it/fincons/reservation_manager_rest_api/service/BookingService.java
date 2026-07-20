@@ -5,10 +5,6 @@ import it.fincons.reservation_manager_rest_api.exception.BookingConflictExceptio
 import it.fincons.reservation_manager_rest_api.exception.InvalidBookingException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
 import it.fincons.reservation_manager_rest_api.mapper.BookingMapper;
-import it.fincons.reservation_manager_rest_api.mapper.RoomMapper;
-import it.fincons.reservation_manager_rest_api.mapper.UserMapper;
-import it.fincons.reservation_manager_rest_api.model.Room;
-import it.fincons.reservation_manager_rest_api.model.User;
 import it.fincons.reservation_manager_rest_api.model.Booking;
 import it.fincons.reservation_manager_rest_api.repository.BookingRepository;
 import it.fincons.reservation_manager_rest_api.repository.RoomRepository;
@@ -26,11 +22,13 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
+    private final BookingMapper bookingMapper;
 
-    public BookingService(BookingRepository bookingRepository, RoomRepository roomRepository, UserRepository userRepository) {
+    public BookingService(BookingRepository bookingRepository, RoomRepository roomRepository, UserRepository userRepository, BookingMapper bookingMapper) {
         this.bookingRepository = bookingRepository;
         this.roomRepository = roomRepository;
         this.userRepository = userRepository;
+        this.bookingMapper = bookingMapper;
     }
 
     public List<Booking> getAllBookings() {
@@ -59,7 +57,7 @@ public class BookingService {
         validateRequest(request, null);
 
 
-        Booking booking = BookingMapper.toEntity(request);
+        Booking booking = bookingMapper.toEntity(request);
         Booking savedBooking = bookingRepository.save(booking);
         /*
         Booking booking = new Booking();
@@ -79,7 +77,7 @@ public class BookingService {
         Booking existingBooking = getBookingById(id);
 
         validateRequest(request, id);
-        Booking newBooking = BookingMapper.toEntity(request);
+        Booking newBooking = bookingMapper.toEntity(request);
 
         existingBooking.setRoom(newBooking.getRoom());
         existingBooking.setUser(newBooking.getUser());
