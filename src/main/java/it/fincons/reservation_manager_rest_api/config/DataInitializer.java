@@ -25,44 +25,40 @@ public class DataInitializer {
         return args -> {
 
             Room room1 = roomRepository.save(
-                    new Room(
-                            null,
-                            "Sala Pescuma",
-                            8,
-                            true
-                    )
+                    Room.builder().
+                            name("Sala Bruno").
+                            capacity(8).
+                            hasProjector(true).
+                            build()
             );
 
             Room room2 = roomRepository.save(
-                    new Room(
-                            null,
-                            "Sala Relax",
-                            12,
-                            false
-                    )
+                    Room.builder().
+                            name("Sala relax").
+                            capacity(12).
+                            hasProjector(false).
+                            build()
             );
 
             User user1 = userRepository.save(
-                    new User(
-                            null,
-                            "Mario Giordano",
-                            "mario.giordano@example.com"
-                    )
+                    User.builder().
+                            name("Mario Giordano").
+                            email("mario.giordano@example.com").
+                            build()
             );
 
             User user2 = userRepository.save(
-                    new User(
-                            null,
-                            "Samuele Lamanna",
-                            "samuele.lamanna@example.com"
-                    )
+                    User.builder().
+                            name("Samuele Lamanna").
+                            email("samuele.lamanna@example.com").
+                            build()
             );
 
             bookingRepository.save(
                     new Booking(
                             null,
-                            room1.getId(),
-                            user1.getId(),
+                            room1,
+                            user1,
                             LocalDate.of(2026, 7, 20),
                             LocalTime.of(10, 0),
                             LocalTime.of(12, 0)
@@ -72,8 +68,8 @@ public class DataInitializer {
             bookingRepository.save(
                     new Booking(
                             null,
-                            room2.getId(),
-                            user2.getId(),
+                            room2,
+                            user2,
                             LocalDate.of(2026, 7, 21),
                             LocalTime.of(14, 0),
                             LocalTime.of(16, 0)

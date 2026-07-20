@@ -5,6 +5,8 @@ import it.fincons.reservation_manager_rest_api.exception.BookingConflictExceptio
 import it.fincons.reservation_manager_rest_api.exception.InvalidBookingException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
 import it.fincons.reservation_manager_rest_api.model.Booking;
+import it.fincons.reservation_manager_rest_api.model.Room;
+import it.fincons.reservation_manager_rest_api.model.User;
 import it.fincons.reservation_manager_rest_api.repository.BookingRepository;
 import it.fincons.reservation_manager_rest_api.repository.RoomRepository;
 import it.fincons.reservation_manager_rest_api.repository.UserRepository;
@@ -58,9 +60,10 @@ public class BookingService {
         validateRequest(request, null);
 
         Booking booking = new Booking();
-
-        booking.setRoomId(request.getRoomId());
-        booking.setUserId(request.getUserId());
+        Room room = roomRepository.findById(request.getRoomId()).orElseThrow(() -> new ResourceNotFoundException("Stanza non trovata"));
+        booking.setRoom(room);
+        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User non trovato"));
+        booking.setUser(user);
         booking.setDate(request.getDate());
         booking.setStartTime(request.getStartTime());
         booking.setEndTime(request.getEndTime());
@@ -78,8 +81,10 @@ public class BookingService {
 
         validateRequest(request, id);
 
-        existingBooking.setRoomId(request.getRoomId());
-        existingBooking.setUserId(request.getUserId());
+        Room room = roomRepository.findById(request.getRoomId()).orElseThrow(() -> new ResourceNotFoundException("Stanza non trovata"));
+        existingBooking.setRoom(room);
+        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User non trovato"));
+        existingBooking.setUser(user);
         existingBooking.setDate(request.getDate());
         existingBooking.setStartTime(request.getStartTime());
         existingBooking.setEndTime(request.getEndTime());
