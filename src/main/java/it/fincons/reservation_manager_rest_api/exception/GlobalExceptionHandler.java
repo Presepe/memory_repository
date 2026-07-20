@@ -10,7 +10,7 @@ import org.springframework.web.context.request.WebRequest;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BookingConflictException.class)
-    public ResponseEntity<ApiError> handleBookingConflict(BookingConflictException ex, WebRequest request) {
+    public ResponseEntity<ApiError> handleBookingConflict(BookingConflictException ex, WebRequest request){
         ApiError error = new ApiError(
                 HttpStatus.CONFLICT.value(),
                 HttpStatus.CONFLICT.getReasonPhrase(),
@@ -53,9 +53,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-
     @ExceptionHandler(DuplicateEmailException.class)
-    public ResponseEntity<ApiError> handleDuplicateEmailException(DuplicateEmailException ex, WebRequest request) {
+    public ResponseEntity<ApiError> handleDuplicateEmailException(DuplicateEmailException ex, WebRequest request){
         ApiError error = new ApiError(
                 HttpStatus.CONFLICT.value(),
                 HttpStatus.CONFLICT.getReasonPhrase(),
