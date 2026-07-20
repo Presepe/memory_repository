@@ -3,11 +3,11 @@ package it.fincons.reservation_manager_rest_api.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import it.fincons.reservation_manager_rest_api.dto.CreateRoomRequest;
-import it.fincons.reservation_manager_rest_api.dto.PatchRoomRequest;
+import it.fincons.reservation_manager_rest_api.dto.request.CreateRoomRequest;
+import it.fincons.reservation_manager_rest_api.dto.request.PatchRoomRequest;
+import it.fincons.reservation_manager_rest_api.dto.response.RoomResponseDTO;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
-import it.fincons.reservation_manager_rest_api.model.Room;
 import it.fincons.reservation_manager_rest_api.service.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class RoomController {
             @ApiResponse(responseCode = "404", description = "Rooms not found")
     })
     @GetMapping
-    public List<Room> getAllRooms() {
+    public List<RoomResponseDTO> getAllRooms() {
         return service.getAllRooms();
     }
 
@@ -38,7 +38,7 @@ public class RoomController {
             @ApiResponse(responseCode = "404", description = "Room not found")
     })
     @GetMapping("/{id}")
-    public Room getRoomById(@PathVariable Long id) throws ResourceNotFoundException {
+    public RoomResponseDTO getRoomById(@PathVariable Long id) throws ResourceNotFoundException {
         return service.getRoomById(id);
     }
 
@@ -48,7 +48,7 @@ public class RoomController {
             @ApiResponse(responseCode = "400", description = "Room not created")
     })
     @PostMapping
-    public Room createRoom(@Valid @RequestBody CreateRoomRequest room) {
+    public RoomResponseDTO createRoom(@Valid @RequestBody CreateRoomRequest room) {
         return service.createRoom(room);
     }
 
@@ -58,9 +58,8 @@ public class RoomController {
             @ApiResponse(responseCode = "404", description = "Room not found"),
             @ApiResponse(responseCode = "400", description = "Room not updated")
     })
-
     @PutMapping("/{id}")
-    public Room updateRoom(@PathVariable Long id, @Valid @RequestBody CreateRoomRequest updatedRoom) throws ResourceNotFoundException {
+    public RoomResponseDTO updateRoom(@PathVariable Long id, @Valid @RequestBody CreateRoomRequest updatedRoom) throws ResourceNotFoundException {
         return service.updateRoom(id, updatedRoom);
     }
 
@@ -70,9 +69,8 @@ public class RoomController {
             @ApiResponse(responseCode = "404", description = "Room not found"),
             @ApiResponse(responseCode = "400", description = "Room not updated")
     })
-
     @PatchMapping("/{id}")
-    public Room patch(@PathVariable Long id, @RequestBody PatchRoomRequest updatedRoom) throws ResourceNotFoundException {
+    public RoomResponseDTO patch(@PathVariable Long id, @RequestBody PatchRoomRequest updatedRoom) throws ResourceNotFoundException {
         return service.patchRoom(id, updatedRoom);
     }
 

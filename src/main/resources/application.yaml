@@ -24,7 +24,7 @@ spring:
       # 'update' aggiorna lo schema se cambi il model.
       # Usa 'create-drop' se vuoi che il DB si svuoti ad ogni riavvio.
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true

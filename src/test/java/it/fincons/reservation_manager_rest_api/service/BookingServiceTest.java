@@ -1,6 +1,6 @@
 package it.fincons.reservation_manager_rest_api.service;
 
-import it.fincons.reservation_manager_rest_api.dto.CreateBookingRequest;
+import it.fincons.reservation_manager_rest_api.dto.request.CreateBookingRequest;
 import it.fincons.reservation_manager_rest_api.exception.BookingConflictException;
 import it.fincons.reservation_manager_rest_api.exception.InvalidBookingException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;

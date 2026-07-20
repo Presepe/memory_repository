@@ -1,0 +1,18 @@
+package it.fincons.reservation_manager_rest_api.dto.response;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserResponseDTO {
+    private long id;
+    private String name;
+    private String email;
+}

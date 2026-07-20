@@ -1,6 +1,6 @@
 package it.fincons.reservation_manager_rest_api.service;
 
-import it.fincons.reservation_manager_rest_api.dto.CreateUserRequest;
+import it.fincons.reservation_manager_rest_api.dto.request.CreateUserRequest;
 import it.fincons.reservation_manager_rest_api.exception.DuplicateEmailException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;

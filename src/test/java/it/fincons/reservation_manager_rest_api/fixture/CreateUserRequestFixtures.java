@@ -1,6 +1,6 @@
 package it.fincons.reservation_manager_rest_api.fixture;
 
-import it.fincons.reservation_manager_rest_api.dto.CreateUserRequest;
+import it.fincons.reservation_manager_rest_api.dto.request.CreateUserRequest;
 
 public class CreateUserRequestFixtures {
 

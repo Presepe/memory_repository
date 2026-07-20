@@ -1,8 +1,16 @@
-package it.fincons.reservation_manager_rest_api.dto;
+package it.fincons.reservation_manager_rest_api.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateUserRequest {
 
     @NotBlank(message = "Il nome dello user è obbligatorio")
@@ -11,22 +19,5 @@ public class CreateUserRequest {
     @NotBlank(message = "L'email è obbligatoria")
     @Email(message = "Inserire un indirizzo email valido")
     private String email;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
 
 }

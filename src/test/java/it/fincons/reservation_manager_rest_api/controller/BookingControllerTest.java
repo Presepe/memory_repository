@@ -2,7 +2,7 @@ package it.fincons.reservation_manager_rest_api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.fincons.reservation_manager_rest_api.controllers.BookingController;
-import it.fincons.reservation_manager_rest_api.dto.CreateBookingRequest;
+import it.fincons.reservation_manager_rest_api.dto.request.CreateBookingRequest;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
 import it.fincons.reservation_manager_rest_api.fixture.BookingFixture;
 import it.fincons.reservation_manager_rest_api.fixture.CreateBookingRequestFixture;

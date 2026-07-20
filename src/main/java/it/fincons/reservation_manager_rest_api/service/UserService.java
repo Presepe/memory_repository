@@ -1,9 +1,11 @@
 package it.fincons.reservation_manager_rest_api.service;
 
-import it.fincons.reservation_manager_rest_api.dto.CreateUserRequest;
+import it.fincons.reservation_manager_rest_api.dto.request.CreateUserRequest;
+import it.fincons.reservation_manager_rest_api.dto.response.UserResponseDTO;
 import it.fincons.reservation_manager_rest_api.exception.DuplicateEmailException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
+import it.fincons.reservation_manager_rest_api.mappers.UserMapper;
 import it.fincons.reservation_manager_rest_api.model.User;
 import it.fincons.reservation_manager_rest_api.repository.BookingRepository;
 import it.fincons.reservation_manager_rest_api.repository.UserRepository;
@@ -17,55 +19,52 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
+    private final UserMapper userMapper;
 
     public UserService(
             UserRepository userRepository,
-            BookingRepository bookingRepository
+            BookingRepository bookingRepository,
+            UserMapper userMapper
     ) {
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
+        this.userMapper = userMapper;
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(userMapper::toDto)
+                .toList();
     }
 
-    public User getUserById(Long id) throws ResourceNotFoundException {
-        validateUserExists(id);
-
-        return userRepository.findById(id).get();
+    public UserResponseDTO getUserById(Long id) throws ResourceNotFoundException {
+        User user = getUserEntityById(id);
+        return userMapper.toDto(user);
     }
 
-    public User createUser(CreateUserRequest request) throws DuplicateEmailException {
+    public UserResponseDTO createUser(CreateUserRequest request) throws DuplicateEmailException {
         validateEmailUnique(request.getEmail());
 
         User user = new User();
-
         user.setName(request.getName());
         user.setEmail(request.getEmail());
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return userMapper.toDto(savedUser);
     }
 
-    public User updateUser(
-            Long id,
-            CreateUserRequest request
-    ) throws DuplicateEmailException, ResourceNotFoundException {
-        validateUserExists(id);
+    public UserResponseDTO updateUser(Long id, CreateUserRequest request) throws DuplicateEmailException, ResourceNotFoundException {
+        User existingUser = getUserEntityById(id);
 
-        User existingUser = userRepository.findById(id).get();
-
-        if (!Objects.equals(
-                existingUser.getEmail(),
-                request.getEmail()
-        )) {
+        if (!Objects.equals(existingUser.getEmail(), request.getEmail())) {
             validateEmailUnique(request.getEmail());
         }
 
         existingUser.setName(request.getName());
         existingUser.setEmail(request.getEmail());
 
-        return userRepository.save(existingUser);
+        User updatedUser = userRepository.save(existingUser);
+        return userMapper.toDto(updatedUser);
     }
 
     public void deleteUser(Long id) throws ResourceInUseException, ResourceNotFoundException {
@@ -82,19 +81,25 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    // ========================================================================
+    // METODI PRIVATI DI SUPPORTO E VALIDAZIONE
+    // ========================================================================
+
+    // Recupera direttamente l'Entity o lancia un'eccezione se non esiste
+    private User getUserEntityById(Long id) throws ResourceNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Utente non trovato con id: " + id));
+    }
+
     private void validateUserExists(Long id) throws ResourceNotFoundException {
         if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    "Utente non trovato con id: " + id
-            );
+            throw new ResourceNotFoundException("Utente non trovato con id: " + id);
         }
     }
 
     private void validateEmailUnique(String email) throws DuplicateEmailException {
         if (userRepository.existsByEmail(email)) {
-            throw new DuplicateEmailException(
-                    "Esiste già un utente con e-mail: " + email
-            );
+            throw new DuplicateEmailException("Esiste già un utente con e-mail: " + email);
         }
     }
 }

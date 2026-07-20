@@ -2,7 +2,7 @@ package it.fincons.reservation_manager_rest_api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.fincons.reservation_manager_rest_api.controllers.UserController;
-import it.fincons.reservation_manager_rest_api.dto.CreateUserRequest;
+import it.fincons.reservation_manager_rest_api.dto.request.CreateUserRequest;
 import it.fincons.reservation_manager_rest_api.exception.DuplicateEmailException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;

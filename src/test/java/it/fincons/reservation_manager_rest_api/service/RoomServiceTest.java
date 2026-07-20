@@ -1,7 +1,7 @@
 package it.fincons.reservation_manager_rest_api.service;
 
-import it.fincons.reservation_manager_rest_api.dto.CreateRoomRequest;
-import it.fincons.reservation_manager_rest_api.dto.PatchRoomRequest;
+import it.fincons.reservation_manager_rest_api.dto.request.CreateRoomRequest;
+import it.fincons.reservation_manager_rest_api.dto.request.PatchRoomRequest;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
 import it.fincons.reservation_manager_rest_api.model.Booking;

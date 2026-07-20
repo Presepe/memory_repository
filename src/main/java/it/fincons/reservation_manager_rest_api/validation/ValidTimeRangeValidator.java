@@ -1,6 +1,6 @@
 package it.fincons.reservation_manager_rest_api.validation;
 
-import it.fincons.reservation_manager_rest_api.dto.CreateBookingRequest;
+import it.fincons.reservation_manager_rest_api.dto.request.CreateBookingRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

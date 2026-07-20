@@ -1,10 +1,17 @@
-package it.fincons.reservation_manager_rest_api.dto;
+package it.fincons.reservation_manager_rest_api.dto.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateRoomRequest {
     @NotBlank(message = "Il nome della sale è obbligatorio")
     private String name;
@@ -15,28 +22,4 @@ public class CreateRoomRequest {
     @NotNull(message = "La capacità è obbligatoria")
     @Min(value = 1, message = "La capacità deve essere almeno 1")
     private Integer capacity;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Boolean getHasProjector() {
-        return hasProjector;
-    }
-
-    public void setHasProjector(Boolean hasProjector) {
-        this.hasProjector = hasProjector;
-    }
-
-    public Integer getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(Integer capacity) {
-        this.capacity = capacity;
-    }
 }

@@ -3,11 +3,11 @@ package it.fincons.reservation_manager_rest_api.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import it.fincons.reservation_manager_rest_api.dto.CreateUserRequest;
+import it.fincons.reservation_manager_rest_api.dto.request.CreateUserRequest;
+import it.fincons.reservation_manager_rest_api.dto.response.UserResponseDTO;
 import it.fincons.reservation_manager_rest_api.exception.DuplicateEmailException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
-import it.fincons.reservation_manager_rest_api.model.User;
 import it.fincons.reservation_manager_rest_api.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Users not found")
     })
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserResponseDTO> getAllUsers() {
         return service.getAllUsers();
     }
 
@@ -38,7 +38,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) throws ResourceNotFoundException {
+    public UserResponseDTO getUserById(@PathVariable Long id) throws ResourceNotFoundException {
         return service.getUserById(id);
     }
 
@@ -49,7 +49,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "User not created")
     })
     @PostMapping
-    public User createUser(@Valid @RequestBody CreateUserRequest user) throws DuplicateEmailException {
+    public UserResponseDTO createUser(@Valid @RequestBody CreateUserRequest user) throws DuplicateEmailException {
         return service.createUser(user);
     }
 
@@ -60,7 +60,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "User not updated")
     })
     @PutMapping("/{id}")
-    public User update(@PathVariable Long id, @Valid @RequestBody CreateUserRequest updatedUser) throws DuplicateEmailException, ResourceNotFoundException {
+    public UserResponseDTO update(@PathVariable Long id, @Valid @RequestBody CreateUserRequest updatedUser) throws DuplicateEmailException, ResourceNotFoundException {
         return service.updateUser(id, updatedUser);
     }
 
