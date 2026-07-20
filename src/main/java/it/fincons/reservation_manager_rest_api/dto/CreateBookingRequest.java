@@ -21,10 +21,8 @@ public class CreateBookingRequest {
     @NotNull(message = "L'orario d'inizio deve essere obbligatorio")
     private LocalTime startTime;
 
-
     @NotNull(message = "L'orario di fine è obbligatorio")
     private LocalTime endTime;
-
 
     public Long getRoomId() {
         return roomId;

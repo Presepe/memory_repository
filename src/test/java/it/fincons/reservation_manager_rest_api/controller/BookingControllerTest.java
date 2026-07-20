@@ -149,7 +149,7 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$.size()").value(mockBookings.size()));
     }
 
-    // --- TEST GET /api/users/{userId}/bookings ---
+    // --- TEST GET /api/users/{user}/bookings ---
 
     @Test
     void getBookingByUserId_shouldReturnBookingsAnd200() throws Exception {
@@ -157,7 +157,7 @@ class BookingControllerTest {
         List<Booking> mockBookings = BookingFixture.createBookingList();
         when(bookingService.getBookingsByUserId(userId)).thenReturn(mockBookings);
 
-        mockMvc.perform(get("/api/users/{userId}/bookings", userId))
+        mockMvc.perform(get("/api/users/{user}/bookings", userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(mockBookings.size()));
     }

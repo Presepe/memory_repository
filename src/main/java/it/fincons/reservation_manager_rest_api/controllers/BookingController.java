@@ -90,7 +90,7 @@ public class BookingController {
             @ApiResponse(responseCode = "200", description = "Bookings found"),
             @ApiResponse(responseCode = "404", description = "Bookings not found")
     })
-    @GetMapping("/users/{userId}/bookings")
+    @GetMapping("/users/{user}/bookings")
     public List<Booking> getBookingByUserId(@PathVariable Long userId) throws ResourceNotFoundException {
         return service.getBookingsByUserId(userId);
     }

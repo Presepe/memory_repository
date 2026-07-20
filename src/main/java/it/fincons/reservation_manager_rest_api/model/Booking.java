@@ -1,87 +1,46 @@
 package it.fincons.reservation_manager_rest_api.model;
 
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@EqualsAndHashCode
+
+@Entity
+@Table(name = "bookings")
 public class Booking {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long roomId;
-    private Long userId;
+
+    @ManyToOne
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
 
-
-    public Booking(Long id, Long roomId, Long userId, LocalDate date, LocalTime startTime, LocalTime endTime) {
-        this.id = id;
-        this.roomId = roomId;
-        this.userId = userId;
-        this.date = date;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
-
-    public Booking() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public LocalTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
-    }
-
     @Override
     public String toString() {
         return "Booking{" +
-                "id='" + id + '\'' +
-                ", roomId='" + roomId + '\'' +
-                ", userId=" + userId + '\'' +
-                " , date=" + date + '\'' +
-                " , startTime=" + startTime + '\'' +
-                " , endTime=" + endTime +
+                "id=" + id +
+                ", roomId=" + room +
+                ", user=" + user +
+                ", date=" + date +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
                 '}';
     }
 }

@@ -144,46 +144,27 @@ class RoomControllerTest {
     }
 
     @Test
-    void getRoomById_ShouldReturnNotFound()
-            throws Exception {
+    void getRoomById_ShouldReturnNotFound() throws Exception {
 
-        when(roomService.getRoomById(99L))
-                .thenThrow(
-                        new ResourceNotFoundException(
-                                "Sala non trovata con id: 99"
-                        )
-                );
+        when(roomService.getRoomById(99L)).thenThrow(new ResourceNotFoundException("Sala non trovata con id: 99"));
 
-        mockMvc.perform(get("/api/rooms/99"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/rooms/99")).andExpect(status().isNotFound());
     }
 
     @Test
-    void deleteRoom_ShouldReturnNotFound()
-            throws Exception {
+    void deleteRoom_ShouldReturnNotFound() throws Exception {
 
-        doThrow(
-                new ResourceNotFoundException(
-                        "Sala non trovata con id: 99"
-                )
-        ).when(roomService).deleteRoom(99L);
+        doThrow(new ResourceNotFoundException("Sala non trovata con id: 99")).when(roomService).deleteRoom(99L);
 
-        mockMvc.perform(delete("/api/rooms/99"))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(delete("/api/rooms/99")).andExpect(status().isNotFound());
     }
 
     @Test
-    void deleteRoom_ShouldReturnConflict()
-            throws Exception {
+    void deleteRoom_ShouldReturnConflict() throws Exception {
 
-        doThrow(
-                new ResourceInUseException(
-                        "Sala occupata"
-                )
-        ).when(roomService).deleteRoom(1L);
+        doThrow(new ResourceInUseException("Sala occupata")).when(roomService).deleteRoom(1L);
 
-        mockMvc.perform(delete("/api/rooms/1"))
-                .andExpect(status().isConflict());
+        mockMvc.perform(delete("/api/rooms/1")).andExpect(status().isConflict());
     }
 
 }

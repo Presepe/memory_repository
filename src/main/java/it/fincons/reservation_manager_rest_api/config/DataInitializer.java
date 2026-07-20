@@ -61,8 +61,8 @@ public class DataInitializer {
             bookingRepository.save(
                     new Booking(
                             null,
-                            room1.getId(),
-                            user1.getId(),
+                            room1,
+                            user1,
                             LocalDate.of(2026, 7, 20),
                             LocalTime.of(10, 0),
                             LocalTime.of(12, 0)
@@ -72,8 +72,8 @@ public class DataInitializer {
             bookingRepository.save(
                     new Booking(
                             null,
-                            room2.getId(),
-                            user2.getId(),
+                            room2,
+                            user2,
                             LocalDate.of(2026, 7, 21),
                             LocalTime.of(14, 0),
                             LocalTime.of(16, 0)

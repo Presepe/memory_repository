@@ -173,7 +173,7 @@ public class BookingServiceTest {
         Booking result = systemUnderTest.updateBooking(bookingId, request);
 
         assertEquals(request.getRoomId(), result.getRoomId());
-        assertEquals(request.getUserId(), result.getUserId());
+        assertEquals(request.getUserId(), result.getUser());
     }
 
     @Test
