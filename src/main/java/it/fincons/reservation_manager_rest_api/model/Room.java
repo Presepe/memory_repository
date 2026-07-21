@@ -8,17 +8,24 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+
 
 @Entity
-@Table(name="rooms")
+@Table(name = "rooms")
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private Integer capacity;
+
+    @Column(nullable = false)
     private Boolean hasProjector;
 
     @Override
@@ -30,4 +37,5 @@ public class Room {
                 ", hasProjector=" + hasProjector +
                 '}';
     }
+
 }
