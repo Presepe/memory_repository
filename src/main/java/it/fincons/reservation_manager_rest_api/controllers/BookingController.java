@@ -10,7 +10,6 @@ import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundExcepti
 import it.fincons.reservation_manager_rest_api.model.Booking;
 import it.fincons.reservation_manager_rest_api.service.BookingService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
