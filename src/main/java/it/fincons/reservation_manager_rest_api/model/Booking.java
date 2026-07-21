@@ -1,6 +1,5 @@
 package it.fincons.reservation_manager_rest_api.model;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 

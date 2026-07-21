@@ -4,6 +4,7 @@ import it.fincons.reservation_manager_rest_api.dto.CreateRoomRequest;
 import it.fincons.reservation_manager_rest_api.dto.PatchRoomRequest;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
+import it.fincons.reservation_manager_rest_api.mapper.RoomMapper;
 import it.fincons.reservation_manager_rest_api.model.Room;
 import it.fincons.reservation_manager_rest_api.repository.BookingRepository;
 import it.fincons.reservation_manager_rest_api.repository.RoomRepository;
@@ -17,10 +18,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final BookingRepository bookingRepository;
 
-    public RoomService(
-            RoomRepository roomRepository,
-            BookingRepository bookingRepository
-    ) {
+    public RoomService(RoomRepository roomRepository, BookingRepository bookingRepository) {
         this.roomRepository = roomRepository;
         this.bookingRepository = bookingRepository;
     }
@@ -36,34 +34,22 @@ public class RoomService {
     }
 
     public Room createRoom(CreateRoomRequest request) {
-        Room room = new Room();
-
-        room.setName(request.getName());
-        room.setCapacity(request.getCapacity());
-        room.setHasProjector(request.getHasProjector());
+        Room room = RoomMapper.toEntity(request);
 
         return roomRepository.save(room);
     }
 
-    public Room updateRoom(
-            Long id,
-            CreateRoomRequest request
-    ) throws ResourceNotFoundException {
-        validateRoomExists(id);
+    public Room updateRoom(Long id, CreateRoomRequest request) throws ResourceNotFoundException {
 
-        Room existingRoom = roomRepository.findById(id).get();
+        getRoomById(id);
 
-        existingRoom.setName(request.getName());
-        existingRoom.setCapacity(request.getCapacity());
-        existingRoom.setHasProjector(request.getHasProjector());
+        Room room = RoomMapper.toEntity(request);
+        room.setId(id);
 
-        return roomRepository.save(existingRoom);
+        return roomRepository.save(room);
     }
 
-    public Room patchRoom(
-            Long id,
-            PatchRoomRequest request
-    ) throws ResourceNotFoundException {
+    public Room patchRoom(Long id, PatchRoomRequest request) throws ResourceNotFoundException {
         validateRoomExists(id);
 
         Room existingRoom = roomRepository.findById(id).get();
@@ -77,9 +63,7 @@ public class RoomService {
         }
 
         if (request.getHasProjector() != null) {
-            existingRoom.setHasProjector(
-                    request.getHasProjector()
-            );
+            existingRoom.setHasProjector(request.getHasProjector());
         }
 
         return roomRepository.save(existingRoom);
@@ -89,11 +73,7 @@ public class RoomService {
         validateRoomExists(id);
 
         if (!bookingRepository.findByRoomId(id).isEmpty()) {
-            throw new ResourceInUseException(
-                    "Impossibile eliminare la sala con id "
-                            + id
-                            + " perché presenta delle prenotazioni"
-            );
+            throw new ResourceInUseException("Impossibile eliminare la sala con id " + id + " perché presenta delle prenotazioni");
         }
 
         roomRepository.deleteById(id);
@@ -101,9 +81,7 @@ public class RoomService {
 
     private void validateRoomExists(Long id) throws ResourceNotFoundException {
         if (!roomRepository.existsById(id)) {
-            throw new ResourceNotFoundException(
-                    "Sala non trovata con id: " + id
-            );
+            throw new ResourceNotFoundException("Sala non trovata con id: " + id);
         }
     }
 }

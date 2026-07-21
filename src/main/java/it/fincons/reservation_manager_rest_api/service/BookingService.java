@@ -59,33 +59,19 @@ public class BookingService {
 
         Booking booking = bookingMapper.toEntity(request);
         Booking savedBooking = bookingRepository.save(booking);
-        /*
-        Booking booking = new Booking();
 
-        booking.setRoom(roomRepository.findById(request.getRoomId()));
-        booking.setUser(userRepository.findById(request.getUserId()));
-        booking.setDate(request.getDate());
-        booking.setStartTime(request.getStartTime());
-        booking.setEndTime(request.getEndTime());
-
-        Booking savedBooking = bookingRepository.save(booking);
-        */
         return savedBooking;
     }
 
     public Booking updateBooking(Long id, CreateBookingRequest request) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
-        Booking existingBooking = getBookingById(id);
-
+        //validazione
+        getBookingById(id);
         validateRequest(request, id);
-        Booking newBooking = bookingMapper.toEntity(request);
 
-        existingBooking.setRoom(newBooking.getRoom());
-        existingBooking.setUser(newBooking.getUser());
-        existingBooking.setDate(newBooking.getDate());
-        existingBooking.setStartTime(newBooking.getStartTime());
-        existingBooking.setEndTime(newBooking.getEndTime());
+        Booking booking = bookingMapper.toEntity(request);
+        booking.setId(id);
 
-        return bookingRepository.save(existingBooking);
+        return bookingRepository.save(booking);
     }
 
     public void deleteBooking(Long id) throws ResourceNotFoundException {
