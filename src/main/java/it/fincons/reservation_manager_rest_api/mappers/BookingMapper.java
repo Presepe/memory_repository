@@ -1,18 +1,17 @@
 package it.fincons.reservation_manager_rest_api.mappers;
 
-import it.fincons.reservation_manager_rest_api.dto.response.BookingResponseDTO;
+import it.fincons.reservation_manager_rest_api.dto.response.BookingResponse;
 import it.fincons.reservation_manager_rest_api.model.Booking;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BookingMapper {
-    // Da notare che il metodo ora è public
-    public BookingResponseDTO toDto(Booking booking) {
+    public BookingResponse toResponse(Booking booking) {
         if (booking == null) {
             return null;
         }
 
-        BookingResponseDTO dto = new BookingResponseDTO();
+        BookingResponse dto = new BookingResponse();
         dto.setId(booking.getId());
         dto.setDate(booking.getDate());
         dto.setStartTime(booking.getStartTime());

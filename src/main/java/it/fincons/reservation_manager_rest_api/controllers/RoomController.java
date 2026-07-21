@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import it.fincons.reservation_manager_rest_api.dto.request.CreateRoomRequest;
 import it.fincons.reservation_manager_rest_api.dto.request.PatchRoomRequest;
-import it.fincons.reservation_manager_rest_api.dto.response.RoomResponseDTO;
+import it.fincons.reservation_manager_rest_api.dto.response.RoomResponse;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
 import it.fincons.reservation_manager_rest_api.service.RoomService;
@@ -28,7 +28,7 @@ public class RoomController {
             @ApiResponse(responseCode = "404", description = "Rooms not found")
     })
     @GetMapping
-    public List<RoomResponseDTO> getAllRooms() {
+    public List<RoomResponse> getAllRooms() {
         return service.getAllRooms();
     }
 
@@ -38,7 +38,7 @@ public class RoomController {
             @ApiResponse(responseCode = "404", description = "Room not found")
     })
     @GetMapping("/{id}")
-    public RoomResponseDTO getRoomById(@PathVariable Long id) throws ResourceNotFoundException {
+    public RoomResponse getRoomById(@PathVariable Long id) throws ResourceNotFoundException {
         return service.getRoomById(id);
     }
 
@@ -48,7 +48,7 @@ public class RoomController {
             @ApiResponse(responseCode = "400", description = "Room not created")
     })
     @PostMapping
-    public RoomResponseDTO createRoom(@Valid @RequestBody CreateRoomRequest room) {
+    public RoomResponse createRoom(@Valid @RequestBody CreateRoomRequest room) {
         return service.createRoom(room);
     }
 
@@ -59,7 +59,7 @@ public class RoomController {
             @ApiResponse(responseCode = "400", description = "Room not updated")
     })
     @PutMapping("/{id}")
-    public RoomResponseDTO updateRoom(@PathVariable Long id, @Valid @RequestBody CreateRoomRequest updatedRoom) throws ResourceNotFoundException {
+    public RoomResponse updateRoom(@PathVariable Long id, @Valid @RequestBody CreateRoomRequest updatedRoom) throws ResourceNotFoundException {
         return service.updateRoom(id, updatedRoom);
     }
 
@@ -70,7 +70,7 @@ public class RoomController {
             @ApiResponse(responseCode = "400", description = "Room not updated")
     })
     @PatchMapping("/{id}")
-    public RoomResponseDTO patch(@PathVariable Long id, @RequestBody PatchRoomRequest updatedRoom) throws ResourceNotFoundException {
+    public RoomResponse patch(@PathVariable Long id, @RequestBody PatchRoomRequest updatedRoom) throws ResourceNotFoundException {
         return service.patchRoom(id, updatedRoom);
     }
 

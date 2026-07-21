@@ -3,9 +3,9 @@ package it.fincons.reservation_manager_rest_api.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.fincons.reservation_manager_rest_api.controllers.BookingController;
 import it.fincons.reservation_manager_rest_api.dto.request.CreateBookingRequest;
+import it.fincons.reservation_manager_rest_api.dto.response.BookingResponse;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
 import it.fincons.reservation_manager_rest_api.fixture.BookingFixture;
-import it.fincons.reservation_manager_rest_api.fixture.CreateBookingRequestFixture;
 import it.fincons.reservation_manager_rest_api.model.Booking;
 import it.fincons.reservation_manager_rest_api.service.BookingService;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class BookingControllerTest {
 
     @Test
     void getAllBookings_shouldReturnListOfBookingsAnd200() throws Exception {
-        List<Booking> mockBookings = BookingFixture.createBookingList();
+        List<BookingResponse> mockBookings = BookingFixture.createResponseList();
         when(bookingService.getAllBookings()).thenReturn(mockBookings);
 
         mockMvc.perform(get("/api/bookings"))
@@ -54,7 +54,7 @@ class BookingControllerTest {
     @Test
     void getBookingById_shouldReturnBookingAnd200_whenFound() throws Exception {
         Long bookingId = 1L;
-        Booking mockBooking = BookingFixture.createValidBooking();
+        BookingResponse mockBooking = BookingFixture.createValidResponse();
         when(bookingService.getBookingById(bookingId)).thenReturn(mockBooking);
 
         mockMvc.perform(get("/api/bookings/{id}", bookingId))
@@ -77,8 +77,8 @@ class BookingControllerTest {
 
     @Test
     void createBooking_shouldReturnBookingAnd200_whenValidRequest() throws Exception {
-        CreateBookingRequest request = CreateBookingRequestFixture.createValidRequest();
-        Booking savedBooking = BookingFixture.createValidBooking();
+        CreateBookingRequest request = BookingFixture.createValidRequest();
+        BookingResponse savedBooking = BookingFixture.createValidResponse();
 
         when(bookingService.createBooking(any(CreateBookingRequest.class))).thenReturn(savedBooking);
 
@@ -91,7 +91,7 @@ class BookingControllerTest {
 
     @Test
     void createBooking_shouldReturn400_whenValidationFails() throws Exception {
-        CreateBookingRequest badRequest = CreateBookingRequestFixture.createRequestWithoutRoom();
+        CreateBookingRequest badRequest = BookingFixture.createRequestWithoutRoom();
 
         mockMvc.perform(post("/api/bookings")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -104,8 +104,8 @@ class BookingControllerTest {
     @Test
     void updateBooking_shouldReturnUpdatedBookingAnd200() throws Exception {
         Long bookingId = 1L;
-        CreateBookingRequest request = CreateBookingRequestFixture.createValidRequest();
-        Booking updatedBooking = BookingFixture.createValidBooking();
+        CreateBookingRequest request = BookingFixture.createValidRequest();
+        BookingResponse updatedBooking = BookingFixture.createValidResponse();
 
         when(bookingService.updateBooking(eq(bookingId), any(CreateBookingRequest.class))).thenReturn(updatedBooking);
 
@@ -141,7 +141,7 @@ class BookingControllerTest {
     @Test
     void getBookingByRoomId_shouldReturnBookingsAnd200() throws Exception {
         Long roomId = 100L;
-        List<Booking> mockBookings = BookingFixture.createBookingList();
+        List<BookingResponse> mockBookings = BookingFixture.createResponseList();
         when(bookingService.getBookingsByRoomId(roomId)).thenReturn(mockBookings);
 
         mockMvc.perform(get("/api/rooms/{roomId}/bookings", roomId))
@@ -154,7 +154,7 @@ class BookingControllerTest {
     @Test
     void getBookingByUserId_shouldReturnBookingsAnd200() throws Exception {
         Long userId = 200L;
-        List<Booking> mockBookings = BookingFixture.createBookingList();
+        List<BookingResponse> mockBookings = BookingFixture.createResponseList();
         when(bookingService.getBookingsByUserId(userId)).thenReturn(mockBookings);
 
         mockMvc.perform(get("/api/users/{userId}/bookings", userId))

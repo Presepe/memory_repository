@@ -1,7 +1,7 @@
 package it.fincons.reservation_manager_rest_api.service;
 
 import it.fincons.reservation_manager_rest_api.dto.request.CreateUserRequest;
-import it.fincons.reservation_manager_rest_api.dto.response.UserResponseDTO;
+import it.fincons.reservation_manager_rest_api.dto.response.UserResponse;
 import it.fincons.reservation_manager_rest_api.exception.DuplicateEmailException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
@@ -31,18 +31,18 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    public List<UserResponseDTO> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
                 .map(userMapper::toDto)
                 .toList();
     }
 
-    public UserResponseDTO getUserById(Long id) throws ResourceNotFoundException {
+    public UserResponse getUserById(Long id) throws ResourceNotFoundException {
         User user = getUserEntityById(id);
         return userMapper.toDto(user);
     }
 
-    public UserResponseDTO createUser(CreateUserRequest request) throws DuplicateEmailException {
+    public UserResponse createUser(CreateUserRequest request) throws DuplicateEmailException {
         validateEmailUnique(request.getEmail());
 
         User user = new User();
@@ -53,7 +53,7 @@ public class UserService {
         return userMapper.toDto(savedUser);
     }
 
-    public UserResponseDTO updateUser(Long id, CreateUserRequest request) throws DuplicateEmailException, ResourceNotFoundException {
+    public UserResponse updateUser(Long id, CreateUserRequest request) throws DuplicateEmailException, ResourceNotFoundException {
         User existingUser = getUserEntityById(id);
 
         if (!Objects.equals(existingUser.getEmail(), request.getEmail())) {

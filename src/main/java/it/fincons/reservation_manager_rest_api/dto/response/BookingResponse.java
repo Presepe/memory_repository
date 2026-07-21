@@ -1,9 +1,6 @@
 package it.fincons.reservation_manager_rest_api.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,7 +9,8 @@ import java.time.LocalTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingResponseDTO {
+@EqualsAndHashCode
+public class BookingResponse {
 
     private Long id;
     private LocalDate date;

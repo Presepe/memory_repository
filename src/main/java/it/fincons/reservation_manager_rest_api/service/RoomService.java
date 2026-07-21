@@ -2,7 +2,7 @@ package it.fincons.reservation_manager_rest_api.service;
 
 import it.fincons.reservation_manager_rest_api.dto.request.CreateRoomRequest;
 import it.fincons.reservation_manager_rest_api.dto.request.PatchRoomRequest;
-import it.fincons.reservation_manager_rest_api.dto.response.RoomResponseDTO;
+import it.fincons.reservation_manager_rest_api.dto.response.RoomResponse;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
 import it.fincons.reservation_manager_rest_api.mappers.RoomMapper;
@@ -30,18 +30,18 @@ public class RoomService {
         this.roomMapper = roomMapper;
     }
 
-    public List<RoomResponseDTO> getAllRooms() {
+    public List<RoomResponse> getAllRooms() {
         return roomRepository.findAll().stream()
                 .map(roomMapper::toDto)
                 .toList();
     }
 
-    public RoomResponseDTO getRoomById(Long id) throws ResourceNotFoundException {
+    public RoomResponse getRoomById(Long id) throws ResourceNotFoundException {
         Room room = getRoomEntityById(id);
         return roomMapper.toDto(room);
     }
 
-    public RoomResponseDTO createRoom(CreateRoomRequest request) {
+    public RoomResponse createRoom(CreateRoomRequest request) {
         Room room = new Room();
 
         room.setName(request.getName());
@@ -52,7 +52,7 @@ public class RoomService {
         return roomMapper.toDto(savedRoom);
     }
 
-    public RoomResponseDTO updateRoom(Long id, CreateRoomRequest request) throws ResourceNotFoundException {
+    public RoomResponse updateRoom(Long id, CreateRoomRequest request) throws ResourceNotFoundException {
         Room existingRoom = getRoomEntityById(id);
 
         existingRoom.setName(request.getName());
@@ -63,7 +63,7 @@ public class RoomService {
         return roomMapper.toDto(updatedRoom);
     }
 
-    public RoomResponseDTO patchRoom(Long id, PatchRoomRequest request) throws ResourceNotFoundException {
+    public RoomResponse patchRoom(Long id, PatchRoomRequest request) throws ResourceNotFoundException {
         Room existingRoom = getRoomEntityById(id);
 
         if (request.getName() != null) {

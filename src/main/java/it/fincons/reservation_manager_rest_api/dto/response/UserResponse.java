@@ -1,7 +1,5 @@
 package it.fincons.reservation_manager_rest_api.dto.response;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomResponseDTO {
+public class UserResponse {
     private long id;
     private String name;
-    private Boolean hasProjector;
-    private Integer capacity;
+    private String email;
 }

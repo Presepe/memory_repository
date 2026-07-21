@@ -1,9 +1,11 @@
 package it.fincons.reservation_manager_rest_api.controller;
 
 import it.fincons.reservation_manager_rest_api.controllers.RoomController;
+import it.fincons.reservation_manager_rest_api.dto.response.RoomResponse;
 import it.fincons.reservation_manager_rest_api.exception.GlobalExceptionHandler;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
+import it.fincons.reservation_manager_rest_api.fixture.RoomFixture;
 import it.fincons.reservation_manager_rest_api.model.Room;
 import it.fincons.reservation_manager_rest_api.service.RoomService;
 import org.junit.jupiter.api.Test;
@@ -34,24 +36,27 @@ class RoomControllerTest {
 
     @Test
     void getAllRooms_ShouldReturnRooms() throws Exception {
+        RoomResponse roomResponse = RoomFixture.createValidResponse();
 
-        when(roomService.getAllRooms()).thenReturn(List.of(new Room(1L, "Sala Leonardo", 8, true)));
+        when(roomService.getAllRooms()).thenReturn(List.of(roomResponse));
 
-        mockMvc.perform(get("/api/rooms")).andExpect(status().isOk()).andExpect(jsonPath("$[0].name").value("Sala Leonardo"));
+        mockMvc.perform(get("/api/rooms")).andExpect(status().isOk()).andExpect(jsonPath("$[0].name").value(roomResponse.getName()));
     }
 
     @Test
     void getRoomById_ShouldReturnRoom() throws Exception {
+        RoomResponse roomResponse = RoomFixture.createValidResponse();
 
-        when(roomService.getRoomById(1L)).thenReturn(new Room(1L, "Sala Leonardo", 8, true));
+        when(roomService.getRoomById(roomResponse.getId())).thenReturn(roomResponse);
 
-        mockMvc.perform(get("/api/rooms/1")).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1));
+        mockMvc.perform(get("/api/rooms/" + roomResponse.getId())).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(roomResponse.getId()));
     }
 
     @Test
     void createRoom_ShouldCreateRoom() throws Exception {
+        RoomResponse roomResponse = RoomFixture.createValidResponse();
 
-        when(roomService.createRoom(any())).thenReturn(new Room(1L, "Sala Leonardo", 8, true));
+        when(roomService.createRoom(any())).thenReturn(roomResponse);
 
         String json = """
                 {
@@ -61,7 +66,7 @@ class RoomControllerTest {
                 }
                 """;
 
-        mockMvc.perform(post("/api/rooms").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1));
+        mockMvc.perform(post("/api/rooms").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(roomResponse.getId()));
     }
 
     @Test
@@ -93,8 +98,9 @@ class RoomControllerTest {
 
     @Test
     void updateRoom_ShouldReturnUpdatedRoom() throws Exception {
+        RoomResponse roomResponse = RoomFixture.createValidResponse();
 
-        when(roomService.updateRoom(eq(1L), any())).thenReturn(new Room(1L, "Sala Aggiornata", 20, false));
+        when(roomService.updateRoom(eq(roomResponse.getId()), any())).thenReturn(roomResponse);
 
         String json = """
                 {
@@ -104,7 +110,7 @@ class RoomControllerTest {
                 }
                 """;
 
-        mockMvc.perform(put("/api/rooms/1").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk()).andExpect(jsonPath("$.name").value("Sala Aggiornata"));
+        mockMvc.perform(put("/api/rooms/" + roomResponse.getId()).contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk()).andExpect(jsonPath("$.name").value(roomResponse.getName()));
     }
 
     @Test
@@ -123,8 +129,9 @@ class RoomControllerTest {
 
     @Test
     void patchRoom_ShouldReturnUpdatedRoom() throws Exception {
+        RoomResponse roomResponse = RoomFixture.createValidResponse();
 
-        when(roomService.patchRoom(eq(1L), any())).thenReturn(new Room(1L, "Sala Patchata", 8, true));
+        when(roomService.patchRoom(eq(roomResponse.getId()), any())).thenReturn(roomResponse);
 
         String json = """
                 {
@@ -132,7 +139,7 @@ class RoomControllerTest {
                 }
                 """;
 
-        mockMvc.perform(patch("/api/rooms/1").contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk()).andExpect(jsonPath("$.name").value("Sala Patchata"));
+        mockMvc.perform(patch("/api/rooms/" + roomResponse.getId()).contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk()).andExpect(jsonPath("$.name").value(roomResponse.getName()));
     }
 
     @Test

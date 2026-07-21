@@ -1,7 +1,7 @@
 package it.fincons.reservation_manager_rest_api.service;
 
 import it.fincons.reservation_manager_rest_api.dto.request.CreateBookingRequest;
-import it.fincons.reservation_manager_rest_api.dto.response.BookingResponseDTO;
+import it.fincons.reservation_manager_rest_api.dto.response.BookingResponse;
 import it.fincons.reservation_manager_rest_api.exception.BookingConflictException;
 import it.fincons.reservation_manager_rest_api.exception.InvalidBookingException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
@@ -39,26 +39,26 @@ public class BookingService {
         this.bookingMapper = bookingMapper;
     }
 
-    public List<BookingResponseDTO> getAllBookings() {
-        return bookingRepository.findAll().stream().map(bookingMapper::toDto).toList();
+    public List<BookingResponse> getAllBookings() {
+        return bookingRepository.findAll().stream().map(bookingMapper::toResponse).toList();
     }
 
-    public BookingResponseDTO getBookingById(Long id) throws ResourceNotFoundException {
+    public BookingResponse getBookingById(Long id) throws ResourceNotFoundException {
         Booking booking = getBookingEntityById(id);
-        return bookingMapper.toDto(booking);
+        return bookingMapper.toResponse(booking);
     }
 
-    public List<BookingResponseDTO> getBookingsByRoomId(Long roomId) throws ResourceNotFoundException {
+    public List<BookingResponse> getBookingsByRoomId(Long roomId) throws ResourceNotFoundException {
         validateRoomExists(roomId);
-        return bookingRepository.findByRoomId(roomId).stream().map(bookingMapper::toDto).toList();
+        return bookingRepository.findByRoomId(roomId).stream().map(bookingMapper::toResponse).toList();
     }
 
-    public List<BookingResponseDTO> getBookingsByUserId(Long userId) throws ResourceNotFoundException {
+    public List<BookingResponse> getBookingsByUserId(Long userId) throws ResourceNotFoundException {
         validateUserExists(userId);
-        return bookingRepository.findByUserId(userId).stream().map(bookingMapper::toDto).toList();
+        return bookingRepository.findByUserId(userId).stream().map(bookingMapper::toResponse).toList();
     }
 
-    public BookingResponseDTO createBooking(CreateBookingRequest request) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
+    public BookingResponse createBooking(CreateBookingRequest request) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
         validateRequest(request, null);
 
         Booking booking = new Booking();
@@ -72,10 +72,10 @@ public class BookingService {
 
         Booking savedBooking = bookingRepository.save(booking);
 
-        return bookingMapper.toDto(savedBooking);
+        return bookingMapper.toResponse(savedBooking);
     }
 
-    public BookingResponseDTO updateBooking(Long id, CreateBookingRequest request) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
+    public BookingResponse updateBooking(Long id, CreateBookingRequest request) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
         // Recuperiamo l'entità usando il metodo helper privato
         Booking existingBooking = getBookingEntityById(id);
 
@@ -91,7 +91,7 @@ public class BookingService {
 
         Booking updatedBooking = bookingRepository.save(existingBooking);
 
-        return bookingMapper.toDto(updatedBooking);
+        return bookingMapper.toResponse(updatedBooking);
     }
 
     public void deleteBooking(Long id) throws ResourceNotFoundException {

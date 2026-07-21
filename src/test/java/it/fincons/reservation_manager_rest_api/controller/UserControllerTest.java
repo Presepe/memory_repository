@@ -3,11 +3,11 @@ package it.fincons.reservation_manager_rest_api.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.fincons.reservation_manager_rest_api.controllers.UserController;
 import it.fincons.reservation_manager_rest_api.dto.request.CreateUserRequest;
+import it.fincons.reservation_manager_rest_api.dto.response.UserResponse;
 import it.fincons.reservation_manager_rest_api.exception.DuplicateEmailException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
-import it.fincons.reservation_manager_rest_api.fixture.CreateUserRequestFixtures;
-import it.fincons.reservation_manager_rest_api.fixture.UserFixtures;
+import it.fincons.reservation_manager_rest_api.fixture.UserFixture;
 import it.fincons.reservation_manager_rest_api.model.User;
 import it.fincons.reservation_manager_rest_api.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -44,10 +44,7 @@ class UserControllerTest {
     @Test
     @DisplayName("GET /api/users dovrebbe restituire 200 OK e la lista degli utenti")
     void getAllUsers_ShouldReturn200AndUserList() throws Exception {
-        List<User> mockUsers = List.of(
-                UserFixtures.createValidUser(1L),
-                UserFixtures.createSecondValidUser(2L)
-        );
+        List<UserResponse> mockUsers = UserFixture.createResponseList();
         when(userService.getAllUsers()).thenReturn(mockUsers);
 
         mockMvc.perform(get("/api/users")
@@ -73,12 +70,12 @@ class UserControllerTest {
     @Test
     @DisplayName("GET /api/users/{id} dovrebbe restituire 200 OK e l'utente se esiste")
     void getUserById_ShouldReturn200AndUser_WhenUserExists() throws Exception {
-        User expectedUser = UserFixtures.createValidUser(1L);
-        when(userService.getUserById(1L)).thenReturn(expectedUser);
+        UserResponse expectedUser = UserFixture.createValidResponse();
+        when(userService.getUserById(eq(expectedUser.getId()))).thenReturn(expectedUser);
 
-        mockMvc.perform(get("/api/users/1"))
+        mockMvc.perform(get("/api/users/" + expectedUser.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.id").value(expectedUser.getId()))
                 .andExpect(jsonPath("$.name").value("Mario Rossi"));
     }
 
@@ -97,8 +94,8 @@ class UserControllerTest {
     @Test
     @DisplayName("POST /api/users dovrebbe restituire 200 OK e creare l'utente se valido")
     void createUser_ShouldReturn200AndCreatedUser() throws Exception {
-        CreateUserRequest request = CreateUserRequestFixtures.createValidRequest();
-        User expectedUser = UserFixtures.createValidUser(1L);
+        CreateUserRequest request = UserFixture.createValidRequest();
+        UserResponse expectedUser = UserFixture.createValidResponse();
 
         when(userService.createUser(any(CreateUserRequest.class))).thenReturn(expectedUser);
 
@@ -106,7 +103,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.id").value(expectedUser.getId()))
                 .andExpect(jsonPath("$.email").value("mario.rossi@email.com"));
     }
 
@@ -130,7 +127,7 @@ class UserControllerTest {
     @Test
     @DisplayName("POST /api/users dovrebbe restituire 409 Conflict se l'email è duplicata")
     void createUser_ShouldReturn409_WhenEmailIsDuplicated() throws Exception {
-        CreateUserRequest request = CreateUserRequestFixtures.createValidRequest();
+        CreateUserRequest request = UserFixture.createValidRequest();
 
         when(userService.createUser(any(CreateUserRequest.class)))
                 .thenThrow(new DuplicateEmailException("Email già in uso"));
@@ -147,8 +144,8 @@ class UserControllerTest {
     @Test
     @DisplayName("PUT /api/users/{id} dovrebbe restituire 200 OK e aggiornare l'utente")
     void updateUser_ShouldReturn200AndUpdatedUser() throws Exception {
-        CreateUserRequest request = CreateUserRequestFixtures.createValidUpdateRequest();
-        User expectedUser = new User(1L, request.getName(), request.getEmail());
+        CreateUserRequest request = UserFixture.createValidUpdateRequest();
+        UserResponse expectedUser = new UserResponse(1L, request.getName(), request.getEmail());
 
         when(userService.updateUser(eq(1L), any(CreateUserRequest.class))).thenReturn(expectedUser);
 
@@ -176,7 +173,7 @@ class UserControllerTest {
     @Test
     @DisplayName("PUT /api/users/{id} dovrebbe restituire 404 Not Found se l'utente non esiste")
     void updateUser_ShouldReturn404_WhenUserDoesNotExist() throws Exception {
-        CreateUserRequest request = CreateUserRequestFixtures.createValidUpdateRequest();
+        CreateUserRequest request = UserFixture.createValidUpdateRequest();
 
         when(userService.updateUser(eq(99L), any(CreateUserRequest.class)))
                 .thenThrow(new ResourceNotFoundException("Utente non trovato"));

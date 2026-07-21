@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import it.fincons.reservation_manager_rest_api.dto.request.CreateBookingRequest;
-import it.fincons.reservation_manager_rest_api.dto.response.BookingResponseDTO;
+import it.fincons.reservation_manager_rest_api.dto.response.BookingResponse;
 import it.fincons.reservation_manager_rest_api.exception.BookingConflictException;
 import it.fincons.reservation_manager_rest_api.exception.InvalidBookingException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
@@ -29,7 +29,7 @@ public class BookingController {
             @ApiResponse(responseCode = "404", description = "Bookings not found")
     })
     @GetMapping("/bookings")
-    public List<BookingResponseDTO> getAllBookings() {
+    public List<BookingResponse> getAllBookings() {
         return service.getAllBookings();
     }
 
@@ -39,7 +39,7 @@ public class BookingController {
             @ApiResponse(responseCode = "404", description = "Booking not found")
     })
     @GetMapping("/bookings/{id}")
-    public BookingResponseDTO getBookingById(@PathVariable Long id) throws ResourceNotFoundException {
+    public BookingResponse getBookingById(@PathVariable Long id) throws ResourceNotFoundException {
         return service.getBookingById(id);
     }
 
@@ -49,7 +49,7 @@ public class BookingController {
             @ApiResponse(responseCode = "400", description = "Booking not created")
     })
     @PostMapping("/bookings")
-    public BookingResponseDTO createBooking(@Valid @RequestBody CreateBookingRequest request) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
+    public BookingResponse createBooking(@Valid @RequestBody CreateBookingRequest request) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
         return service.createBooking(request);
     }
 
@@ -59,7 +59,7 @@ public class BookingController {
             @ApiResponse(responseCode = "400", description = "Booking not updated")
     })
     @PutMapping("/bookings/{id}")
-    public BookingResponseDTO updateBooking(@PathVariable Long id, @Valid @RequestBody CreateBookingRequest updatedBooking) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
+    public BookingResponse updateBooking(@PathVariable Long id, @Valid @RequestBody CreateBookingRequest updatedBooking) throws InvalidBookingException, BookingConflictException, ResourceNotFoundException {
         return service.updateBooking(id, updatedBooking);
     }
 
@@ -79,7 +79,7 @@ public class BookingController {
             @ApiResponse(responseCode = "404", description = "Bookings not found")
     })
     @GetMapping("/rooms/{roomId}/bookings")
-    public List<BookingResponseDTO> getBookingByRoomId(@PathVariable Long roomId) throws ResourceNotFoundException {
+    public List<BookingResponse> getBookingByRoomId(@PathVariable Long roomId) throws ResourceNotFoundException {
         return service.getBookingsByRoomId(roomId);
     }
 
@@ -89,7 +89,7 @@ public class BookingController {
             @ApiResponse(responseCode = "404", description = "Bookings not found")
     })
     @GetMapping("/users/{userId}/bookings")
-    public List<BookingResponseDTO> getBookingByUserId(@PathVariable Long userId) throws ResourceNotFoundException {
+    public List<BookingResponse> getBookingByUserId(@PathVariable Long userId) throws ResourceNotFoundException {
         return service.getBookingsByUserId(userId);
     }
 }

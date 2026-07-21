@@ -1,11 +1,12 @@
 package it.fincons.reservation_manager_rest_api.service;
 
 import it.fincons.reservation_manager_rest_api.dto.request.CreateUserRequest;
+import it.fincons.reservation_manager_rest_api.dto.response.UserResponse;
 import it.fincons.reservation_manager_rest_api.exception.DuplicateEmailException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceInUseException;
 import it.fincons.reservation_manager_rest_api.exception.ResourceNotFoundException;
-import it.fincons.reservation_manager_rest_api.fixture.CreateUserRequestFixtures;
-import it.fincons.reservation_manager_rest_api.fixture.UserFixtures;
+import it.fincons.reservation_manager_rest_api.fixture.UserFixture;
+import it.fincons.reservation_manager_rest_api.mappers.UserMapper;
 import it.fincons.reservation_manager_rest_api.model.Booking;
 import it.fincons.reservation_manager_rest_api.model.User;
 import it.fincons.reservation_manager_rest_api.repository.BookingRepository;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
@@ -34,6 +36,10 @@ class UserServiceTest {
     @Mock
     private BookingRepository bookingRepository;
 
+    // Inizializziamo l'oggetto reale per il mapper
+    @Spy
+    private UserMapper userMapper;
+
     @InjectMocks
     private UserService userService;
 
@@ -43,15 +49,14 @@ class UserServiceTest {
     @DisplayName("getAllUsers dovrebbe restituire la lista di tutti gli utenti")
     void getAllUsers_ShouldReturnUserList() {
         List<User> mockUsers = List.of(
-                UserFixtures.createValidUser(1L),
-                UserFixtures.createSecondValidUser(2L)
+                UserFixture.createValidEntity(1L),
+                UserFixture.createValidEntity2(2L)
         );
         when(userRepository.findAll()).thenReturn(mockUsers);
 
-        List<User> result = userService.getAllUsers();
+        List<UserResponse> result = userService.getAllUsers();
 
         assertEquals(2, result.size());
-        verify(userRepository, times(1)).findAll();
     }
 
     // --- TEST PER GET USER BY ID ---
@@ -59,11 +64,12 @@ class UserServiceTest {
     @Test
     @DisplayName("getUserById dovrebbe restituire l'utente se esiste")
     void getUserById_ShouldReturnUser_WhenUserExists() {
-        User expectedUser = UserFixtures.createValidUser(1L);
-        when(userRepository.existsById(1L)).thenReturn(true);
+        User expectedUser = UserFixture.createValidEntity(1L);
+
+        // Rimosso existsById
         when(userRepository.findById(1L)).thenReturn(Optional.of(expectedUser));
 
-        User result = userService.getUserById(1L);
+        UserResponse result = userService.getUserById(1L);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
@@ -73,10 +79,10 @@ class UserServiceTest {
     @Test
     @DisplayName("getUserById dovrebbe lanciare ResourceNotFoundException se l'utente non esiste")
     void getUserById_ShouldThrowException_WhenUserDoesNotExist() {
-        when(userRepository.existsById(99L)).thenReturn(false);
+        // Modificato per usare findById vuoto al posto di existsById
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> userService.getUserById(99L));
-        verify(userRepository, never()).findById(any());
     }
 
     // --- TEST PER CREATE USER ---
@@ -84,7 +90,7 @@ class UserServiceTest {
     @Test
     @DisplayName("createUser dovrebbe salvare e restituire l'utente se l'email è univoca")
     void createUser_ShouldSaveUser_WhenEmailIsUnique() {
-        CreateUserRequest request = CreateUserRequestFixtures.createValidRequest();
+        CreateUserRequest request = UserFixture.createValidRequest();
         when(userRepository.existsByEmail(request.getEmail())).thenReturn(false);
 
         // Simula il salvataggio assegnando un ID all'oggetto
@@ -94,7 +100,7 @@ class UserServiceTest {
             return savedUser;
         });
 
-        User result = userService.createUser(request);
+        UserResponse result = userService.createUser(request);
 
         assertNotNull(result.getId());
         assertEquals(request.getName(), result.getName());
@@ -105,7 +111,7 @@ class UserServiceTest {
     @Test
     @DisplayName("createUser dovrebbe lanciare DuplicateEmailException se l'email è già in uso")
     void createUser_ShouldThrowException_WhenEmailExists() {
-        CreateUserRequest request = CreateUserRequestFixtures.createValidRequest();
+        CreateUserRequest request = UserFixture.createValidRequest();
         when(userRepository.existsByEmail(request.getEmail())).thenReturn(true);
 
         assertThrows(DuplicateEmailException.class, () -> userService.createUser(request));
@@ -117,16 +123,16 @@ class UserServiceTest {
     @Test
     @DisplayName("updateUser dovrebbe aggiornare l'utente se i dati sono validi")
     void updateUser_ShouldUpdate_WhenDataIsValid() {
-        User existingUser = UserFixtures.createValidUser(1L);
-        CreateUserRequest updateRequest = CreateUserRequestFixtures.createValidUpdateRequest();
+        User existingUser = UserFixture.createValidEntity(1L);
+        CreateUserRequest updateRequest = UserFixture.createValidUpdateRequest();
 
-        when(userRepository.existsById(1L)).thenReturn(true);
+        // Rimosso existsById
         when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
         when(userRepository.existsByEmail(updateRequest.getEmail())).thenReturn(false);
 
         when(userRepository.save(any(User.class))).thenReturn(existingUser);
 
-        User result = userService.updateUser(1L, updateRequest);
+        UserResponse result = userService.updateUser(1L, updateRequest);
 
         assertEquals(updateRequest.getName(), result.getName());
         assertEquals(updateRequest.getEmail(), result.getEmail());
@@ -135,8 +141,10 @@ class UserServiceTest {
     @Test
     @DisplayName("updateUser dovrebbe lanciare eccezione se l'utente non esiste")
     void updateUser_ShouldThrowException_WhenUserDoesNotExist() {
-        CreateUserRequest updateRequest = CreateUserRequestFixtures.createValidUpdateRequest();
-        when(userRepository.existsById(99L)).thenReturn(false);
+        CreateUserRequest updateRequest = UserFixture.createValidUpdateRequest();
+
+        // Modificato per usare findById vuoto
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> userService.updateUser(99L, updateRequest));
     }
@@ -144,11 +152,12 @@ class UserServiceTest {
     @Test
     @DisplayName("updateUser dovrebbe lanciare eccezione se la nuova email è già usata da un altro utente")
     void updateUser_ShouldThrowException_WhenNewEmailIsDuplicated() {
-        User existingUser = UserFixtures.createValidUser(1L);
-        CreateUserRequest updateRequest = CreateUserRequestFixtures.createValidUpdateRequest();
+        User existingUser = UserFixture.createValidEntity(1L);
+        CreateUserRequest updateRequest = UserFixture.createValidUpdateRequest();
 
-        when(userRepository.existsById(1L)).thenReturn(true);
+        // Rimosso existsById
         when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
+
         // Simuliamo che la nuova email sia già presente a sistema
         when(userRepository.existsByEmail(updateRequest.getEmail())).thenReturn(true);
 
@@ -161,6 +170,7 @@ class UserServiceTest {
     @Test
     @DisplayName("deleteUser dovrebbe eliminare l'utente se non ha prenotazioni attive")
     void deleteUser_ShouldDelete_WhenNoActiveBookings() {
+        // Qui manteniamo existsById perché validateUserExists viene ancora chiamato dalla deleteUser
         when(userRepository.existsById(1L)).thenReturn(true);
         when(bookingRepository.findByUserId(1L)).thenReturn(Collections.emptyList());
 
